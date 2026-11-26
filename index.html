@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0e1014">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%92%AA%3C/text%3E%3C/svg%3E">
+<meta name="description" content="减脂 + 增肌双模式健身计划：每周训练安排、38个动作详细教程、每日能量消耗计算、BMR/TDEE热量计算器与饮食方案">
+<title>健身计划 · 减脂增肌全攻略</title>
+<style>
+/* 健身计划 · 深色运动风主题 */
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+:root {
+  --bg: #0e1014; --bg2: #12151b; --card: #191d26; --card2: #212634; --border: #2b3140; --border2: #3a4154;
+  --text: #edf0f6; --muted: #98a1b6; --dim: #6c7589;
+}
+body.mode-fat_loss { --accent: #a3e635; --accent-deep: #65a30d; --accent-soft: rgba(163, 230, 53, .13); --accent-glow: rgba(163, 230, 53, .35); }
+body.mode-muscle_gain { --accent: #fb923c; --accent-deep: #ea580c; --accent-soft: rgba(251, 146, 60, .13); --accent-glow: rgba(251, 146, 60, .35); }
+html { scroll-behavior: smooth; }
+body {
+  background: radial-gradient(1200px 500px at 70% -10%, var(--accent-soft), transparent 60%), var(--bg);
+  color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+  font-size: 15px; line-height: 1.65; min-height: 100vh; transition: background .4s;
+}
+.wrap { max-width: 1020px; margin: 0 auto; padding: 0 16px 60px; }
+
+/* ── 顶栏 ── */
+header { position: sticky; top: 0; z-index: 50; background: rgba(14, 16, 20, .86); backdrop-filter: blur(14px); border-bottom: 1px solid var(--border); }
+.hd-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 0; }
+.logo { font-size: 19px; font-weight: 800; letter-spacing: .5px; display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+.logo .badge-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 12px var(--accent-glow); }
+.logo small { font-size: 11px; font-weight: 600; color: var(--dim); display: block; letter-spacing: 2px; }
+.seg { display: flex; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 3px; gap: 3px; }
+.seg button { border: 0; background: transparent; color: var(--muted); font-size: 14px; font-weight: 700; padding: 7px 16px; border-radius: 9px; cursor: pointer; transition: all .25s; font-family: inherit; }
+.seg button.active { background: var(--accent); color: #10130a; box-shadow: 0 2px 14px var(--accent-glow); }
+
+/* ── Tab 导航 ── */
+.tabs { display: flex; gap: 4px; padding: 0 0 10px; overflow-x: auto; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+.tabs button { border: 1px solid transparent; background: transparent; color: var(--muted); font-size: 14.5px; font-weight: 700; padding: 8px 18px; border-radius: 11px; cursor: pointer; white-space: nowrap; transition: all .2s; font-family: inherit; }
+.tabs button.active { color: var(--accent); background: var(--accent-soft); border-color: var(--accent-glow); }
+.tabs button .n { display: none; font-size: 11px; color: var(--dim); margin-left: 3px; }
+
+/* ── 通用卡片 ── */
+section.tab-panel { display: none; animation: fadein .3s; }
+section.tab-panel.show { display: block; }
+@keyframes fadein { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-top: 14px; }
+.card.today { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent-glow), 0 8px 30px -12px var(--accent-glow); }
+.card.h3-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+h2.sec { font-size: 17px; font-weight: 800; margin: 22px 0 2px; display: flex; align-items: center; gap: 8px; }
+h2.sec .bar { width: 4px; height: 18px; border-radius: 2px; background: var(--accent); box-shadow: 0 0 8px var(--accent-glow); }
+.sub { color: var(--muted); font-size: 13px; margin-top: 2px; }
+
+/* 统计卡 */
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-top: 14px; }
+.stat { background: linear-gradient(145deg, var(--card2), var(--card)); border: 1px solid var(--border); border-radius: 14px; padding: 13px 15px; }
+.stat .v { font-size: 24px; font-weight: 800; color: var(--accent); font-variant-numeric: tabular-nums; }
+.stat .v small { font-size: 12px; color: var(--dim); font-weight: 600; margin-left: 2px; }
+.stat .k { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.stat.plain .v { color: var(--text); }
+
+/* 徽章 / 标签 */
+.tag { display: inline-flex; align-items: center; font-size: 11.5px; font-weight: 700; padding: 2px 9px; border-radius: 99px; background: var(--accent-soft); color: var(--accent); border: 1px solid var(--accent-glow); white-space: nowrap; }
+.tag.gray { background: var(--card2); color: var(--muted); border-color: var(--border); }
+.tag.orange { background: rgba(251, 146, 60, .12); color: #fdba74; border-color: rgba(251, 146, 60, .35); }
+.rest-tag { color: #94a3b8; }
+.stars { color: var(--accent); font-size: 12px; letter-spacing: 1px; }
+
+/* ── 计划 Tab ── */
+.plan-head { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.week-notes { display: grid; grid-template-columns: repeat(auto-fit, minmax(225px, 1fr)); gap: 9px; margin-top: 4px; }
+.wnote { background: var(--card); border: 1px dashed var(--border2); border-radius: 12px; padding: 10px 13px; font-size: 12.5px; color: var(--muted); }
+.wnote b { color: var(--accent); display: block; font-size: 13px; margin-bottom: 2px; }
+.day-card .day-top { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.day-card .dnum { font-size: 12px; font-weight: 800; color: var(--accent); background: var(--accent-soft); border: 1px solid var(--accent-glow); padding: 3px 10px; border-radius: 99px; }
+.day-card .dttl { font-size: 16.5px; font-weight: 800; }
+.day-card .meta { font-size: 12.5px; color: var(--muted); display: flex; gap: 14px; flex-wrap: wrap; margin-top: 6px; }
+.day-card .meta b { color: var(--accent); font-variant-numeric: tabular-nums; }
+.focus-line { font-size: 13px; color: var(--muted); margin-top: 8px; padding: 8px 12px; background: var(--bg2); border-radius: 10px; border-left: 3px solid var(--accent); }
+.ex-row { display: flex; align-items: center; gap: 11px; padding: 11px 12px; background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; margin-top: 9px; cursor: pointer; transition: all .2s; }
+.ex-row:hover { border-color: var(--accent-glow); background: var(--card2); }
+.ex-row .ck { width: 21px; height: 21px; flex: 0 0 21px; border: 2px solid var(--border2); border-radius: 7px; cursor: pointer; position: relative; transition: all .2s; background: transparent; }
+.ex-row.done { opacity: .55; }
+.ex-row.done .ex-name { text-decoration: line-through; text-decoration-color: var(--accent); }
+.ex-row.done .ck { background: var(--accent); border-color: var(--accent); }
+.ex-row.done .ck::after { content: "✓"; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: #10130a; font-size: 13px; font-weight: 900; }
+.ex-row .ex-main { flex: 1; min-width: 0; }
+.ex-row .ex-name { font-weight: 700; font-size: 14.5px; }
+.ex-row .ex-sub { font-size: 12px; color: var(--muted); margin-top: 1px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ex-row .ex-kcal { text-align: right; flex: 0 0 auto; }
+.ex-row .ex-kcal .v { font-size: 14px; font-weight: 800; color: var(--accent); font-variant-numeric: tabular-nums; }
+.ex-row .ex-kcal .u { font-size: 10.5px; color: var(--dim); }
+.prog-wrap { display: flex; align-items: center; gap: 10px; margin-top: 12px; }
+.prog { flex: 1; height: 7px; background: var(--bg2); border-radius: 99px; overflow: hidden; border: 1px solid var(--border); }
+.prog i { display: block; height: 100%; background: linear-gradient(90deg, var(--accent-deep), var(--accent)); border-radius: 99px; transition: width .4s; }
+.prog-wrap span { font-size: 12px; color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.empty-tip { padding: 26px 16px; text-align: center; color: var(--dim); font-size: 13.5px; }
+.empty-tip .big { font-size: 30px; display: block; margin-bottom: 6px; }
+
+/* ── 动作库 Tab ── */
+.search-row { display: flex; gap: 10px; margin-top: 14px; }
+.search-input { flex: 1; min-width: 0; background: var(--card); border: 1px solid var(--border); color: var(--text); border-radius: 12px; padding: 11px 15px; font-size: 14.5px; font-family: inherit; outline: none; transition: border .2s; }
+.search-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.chips { display: flex; gap: 7px; flex-wrap: wrap; margin-top: 10px; align-items: center; }
+.chips .lab { font-size: 12px; color: var(--dim); font-weight: 700; margin-right: 2px; width: 28px; flex: 0 0 28px; }
+.chip { border: 1px solid var(--border); background: var(--card); color: var(--muted); font-size: 12.5px; font-weight: 700; padding: 5px 13px; border-radius: 99px; cursor: pointer; transition: all .2s; font-family: inherit; }
+.chip:hover { border-color: var(--border2); color: var(--text); }
+.chip.on { background: var(--accent); border-color: var(--accent); color: #10130a; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(238px, 1fr)); gap: 12px; margin-top: 14px; }
+.ecard { background: var(--card); border: 1px solid var(--border); border-radius: 15px; padding: 15px; cursor: pointer; transition: all .22s; display: flex; flex-direction: column; gap: 8px; }
+.ecard:hover { border-color: var(--accent-glow); transform: translateY(-2px); box-shadow: 0 10px 28px -14px rgba(0, 0, 0, .8); }
+.ecard .t { font-size: 16px; font-weight: 800; }
+.ecard .e { font-size: 11.5px; color: var(--dim); margin-top: -4px; }
+.ecard .tg { font-size: 12px; color: var(--muted); line-height: 1.5; }
+.ecard .ft { display: flex; align-items: center; justify-content: flex-start; flex-wrap: wrap; gap: 6px 8px; margin-top: auto; padding-top: 9px; border-top: 1px solid var(--border); }
+.ecard .ft .met { margin-left: auto; }
+.ecard .met { font-size: 11.5px; color: var(--dim); font-variant-numeric: tabular-nums; }
+.result-count { font-size: 12.5px; color: var(--dim); margin-top: 16px; }
+.result-count b { color: var(--accent); }
+
+/* ── 能量 Tab ── */
+.form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; margin-top: 6px; }
+.f-item label { display: block; font-size: 12.5px; color: var(--muted); font-weight: 700; margin-bottom: 6px; }
+.f-item input, .f-item select { width: 100%; background: var(--bg2); border: 1px solid var(--border); color: var(--text); border-radius: 10px; padding: 10px 13px; font-size: 15px; font-family: inherit; outline: none; }
+.f-item input:focus, .f-item select:focus { border-color: var(--accent); }
+.gender-seg { display: flex; gap: 6px; }
+.gender-seg button { flex: 1; border: 1px solid var(--border); background: var(--bg2); color: var(--muted); padding: 10px 0; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; transition: all .2s; }
+.gender-seg button.on { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+.intake-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; margin-top: 12px; }
+.intake { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 14px; text-align: center; }
+.intake.hl { border-color: var(--accent); background: var(--accent-soft); }
+.intake .v { font-size: 22px; font-weight: 800; color: var(--accent); font-variant-numeric: tabular-nums; }
+.intake .k { font-size: 12px; color: var(--muted); margin-top: 3px; }
+.intake .d { font-size: 11px; color: var(--dim); margin-top: 5px; }
+.burn-list { margin-top: 8px; }
+.burn-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px dashed var(--border); font-size: 13.5px; }
+.burn-row:last-child { border-bottom: 0; }
+.burn-row .n { width: 120px; flex: 0 0 120px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.burn-row .b { flex: 1; height: 9px; background: var(--bg2); border-radius: 99px; overflow: hidden; }
+.burn-row .b i { display: block; height: 100%; background: linear-gradient(90deg, var(--accent-deep), var(--accent)); border-radius: 99px; }
+.burn-row .v { width: 92px; flex: 0 0 92px; text-align: right; font-weight: 700; color: var(--accent); font-size: 13px; font-variant-numeric: tabular-nums; }
+.formula-note { font-size: 12px; color: var(--dim); line-height: 1.7; margin-top: 12px; padding: 10px 13px; background: var(--bg2); border-radius: 10px; }
+
+/* ── 饮食 Tab ── */
+.diet-card.hl { border-color: var(--accent); }
+.diet-tag { font-size: 12px; background: var(--accent-soft); color: var(--accent); padding: 2px 10px; border-radius: 99px; font-weight: 700; border: 1px solid var(--accent-glow); }
+.meal { display: flex; gap: 12px; padding: 11px 0; border-bottom: 1px dashed var(--border2); }
+.meal:last-child { border-bottom: 0; }
+.meal .time { flex: 0 0 104px; font-size: 12px; font-weight: 800; color: var(--accent); padding-top: 2px; }
+.meal .time b { display: block; font-size: 13.5px; font-weight: 800; }
+.meal .time span { color: var(--dim); font-size: 11px; font-weight: 600; }
+.meal .what { flex: 1; font-size: 13.5px; color: var(--muted); }
+ul.dot { list-style: none; margin-top: 8px; }
+ul.dot li { position: relative; padding-left: 20px; margin-top: 7px; font-size: 13.5px; color: var(--muted); }
+ul.dot li::before { content: ""; position: absolute; left: 2px; top: 8.5px; width: 7px; height: 7px; border-radius: 2.5px; background: var(--accent); transform: rotate(45deg); }
+ul.dot li b { color: var(--text); }
+
+/* ── 弹窗 ── */
+.modal-mask { position: fixed; inset: 0; background: rgba(6, 8, 12, .72); backdrop-filter: blur(6px); z-index: 100; display: flex; align-items: flex-end; justify-content: center; padding: 0; opacity: 0; pointer-events: none; transition: opacity .25s; }
+.modal-mask.show { opacity: 1; pointer-events: auto; }
+.modal { width: min(760px, 100%); max-height: 88vh; overflow-y: auto; background: var(--bg2); border: 1px solid var(--border2); border-radius: 22px 22px 0 0; padding: 20px 20px 34px; transform: translateY(40px); transition: transform .3s; scrollbar-width: thin; }
+.modal-mask.show .modal { transform: none; }
+@media (min-width: 700px) {
+  .modal-mask { align-items: center; padding: 24px; }
+  .modal { border-radius: 20px; transform: translateY(16px) scale(.98); }
+  .modal-mask.show .modal { transform: none; }
+}
+.m-close { position: sticky; top: 0; float: right; margin: -6px -6px 0 0; width: 34px; height: 34px; border: 0; border-radius: 11px; background: var(--card2); color: var(--muted); font-size: 17px; cursor: pointer; z-index: 5; font-family: inherit; }
+.m-close:hover { color: var(--text); }
+.m-title { font-size: 20px; font-weight: 800; padding-right: 44px; }
+.m-en { font-size: 12px; color: var(--dim); margin-top: 1px; padding-right: 44px; }
+.m-badges { display: flex; flex-wrap: wrap; gap: 7px; margin: 11px 0 3px; }
+.m-intro { font-size: 13.5px; color: var(--muted); margin: 10px 0 4px; padding: 10px 13px; background: var(--card); border-radius: 11px; border-left: 3px solid var(--accent); }
+.m-sec { font-size: 14.5px; font-weight: 800; margin: 18px 0 4px; display: flex; align-items: center; gap: 8px; }
+.m-sec .ic { width: 24px; height: 24px; border-radius: 8px; background: var(--accent-soft); color: var(--accent); display: inline-flex; align-items: center; justify-content: center; font-size: 12px; border: 1px solid var(--accent-glow); }
+ol.ov { list-style: none; counter-reset: s; margin-top: 6px; }
+ol.ov li { counter-increment: s; position: relative; padding: 8px 0 8px 38px; font-size: 13.5px; color: var(--muted); border-bottom: 1px dashed var(--border); }
+ol.ov li:last-child { border-bottom: 0; }
+ol.ov li::before { content: counter(s); position: absolute; left: 0; top: 9px; width: 24px; height: 24px; border-radius: 9px; background: var(--accent-soft); color: var(--accent); border: 1px solid var(--accent-glow); font-weight: 800; font-size: 12px; display: flex; align-items: center; justify-content: center; }
+ol.ov li b, .m-mistakes li b { color: var(--text); }
+.m-mistakes { list-style: none; margin-top: 6px; }
+.m-mistakes li { position: relative; padding: 8px 0 8px 30px; font-size: 13px; color: var(--muted); border-bottom: 1px dashed var(--border); }
+.m-mistakes li:last-child { border-bottom: 0; }
+.m-mistakes li::before { content: "✕"; position: absolute; left: 2px; top: 8px; color: #f87171; font-weight: 900; font-size: 13px; }
+.m-kcal { margin-top: 16px; padding: 12px 15px; background: var(--accent-soft); border: 1px solid var(--accent-glow); border-radius: 12px; font-size: 13px; color: var(--muted); }
+.m-kcal b { color: var(--accent); font-size: 16px; }
+
+/* ── 其他 ── */
+.foot-note { margin-top: 26px; padding: 15px 17px; background: var(--card); border: 1px solid var(--border); border-radius: 14px; font-size: 12px; color: var(--dim); line-height: 1.8; }
+.foot-note b { color: var(--muted); }
+.toast { position: fixed; left: 50%; bottom: 30px; transform: translate(-50%, 20px); background: var(--card2); border: 1px solid var(--accent-glow); color: var(--text); font-size: 13px; font-weight: 700; padding: 10px 20px; border-radius: 99px; z-index: 200; opacity: 0; pointer-events: none; transition: all .3s; white-space: nowrap; box-shadow: 0 8px 30px rgba(0, 0, 0, .5); }
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+@media (max-width: 560px) {
+  .hd-row { flex-wrap: wrap; padding: 10px 0; }
+  .logo { font-size: 17px; }
+  .logo small { display: none; }
+  .stat .v { font-size: 20px; }
+  .stats > .stat:first-child { grid-column: 1 / -1; }
+  .t-emoji { display: none; }
+  .tabs button { font-size: 13px; padding: 7px 12px; }
+  .chip { padding: 7px 14px; font-size: 13px; }
+  .search-input { padding: 12px 14px; }
+  .burn-row .n { width: 92px; flex-basis: 92px; font-size: 12px; }
+  .burn-row .v { width: 70px; flex-basis: 70px; font-size: 11.5px; }
+  .meal .time { flex-basis: 86px; }
+  .ex-row .ex-kcal .u { display: none; }
+  .wrap { padding-bottom: 40px; }
+}
+
+</style>
+</head>
+<body class="mode-fat_loss">
+<header>
+  <div class="wrap">
+    <div class="hd-row">
+      <div class="logo"><span class="badge-dot"></span><span>健身计划<small>减脂 · 增肌 · 全攻略</small></span></div>
+      <div class="seg" id="mode-seg">
+        <button data-m="fat_loss">🔥 减脂</button>
+        <button data-m="muscle_gain">💪 增肌</button>
+      </div>
+    </div>
+    <nav class="tabs">
+      <button data-t="plan" class="active"><span class="t-emoji">📋</span> 训练计划</button>
+      <button data-t="lib"><span class="t-emoji">🏋️</span> 动作库</button>
+      <button data-t="energy"><span class="t-emoji">🔥</span> 能量计算</button>
+      <button data-t="diet"><span class="t-emoji">🍽</span> 饮食方案</button>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+  <!-- 训练计划 -->
+  <section class="tab-panel show" id="tab-plan">
+    <div class="stats" id="plan-stats"></div>
+    <h2 class="sec"><span class="bar"></span>每周安排<span class="sub" id="reset-wrap" style="margin-left:auto"><button class="chip" id="reset-checkin" style="font-size:11.5px">清空今日打卡</button></span></h2>
+    <div id="plan-box"></div>
+    <div class="sub" style="margin-top:10px;color:var(--dim)">💡 点击任意动作行查看详细图文教程；点前方方框完成打卡（打卡数据保存在本设备浏览器中）。</div>
+  </section>
+
+  <!-- 动作库 -->
+  <section class="tab-panel" id="tab-lib">
+    <div class="search-row">
+      <input class="search-input" id="lib-search" type="search" placeholder="搜动作 / 部位，如：臀、深蹲">
+    </div>
+    <div class="chips" id="lib-chips-cat"></div>
+    <div class="chips" id="lib-chips-eq"></div>
+    <div class="chips" id="lib-chips-diff"></div>
+    <div class="result-count" id="lib-count"></div>
+    <div class="grid" id="lib-grid"></div>
+  </section>
+
+  <!-- 能量计算 -->
+  <section class="tab-panel" id="tab-energy">
+    <div class="card">
+      <h2 class="sec"><span class="bar"></span>身体数据</h2>
+      <div class="sub">录入后自动计算；体重同时用于全站动作的能量估算，并保存本设备</div>
+      <div class="form-grid" style="margin-top:12px">
+        <div class="f-item"><label>性别</label>
+          <div class="gender-seg" id="gender-seg"><button data-g="male">♂ 男</button><button data-g="female">♀ 女</button></div>
+        </div>
+        <div class="f-item"><label>年龄（岁）</label><input id="in-age" type="number" min="10" max="90" inputmode="numeric"></div>
+        <div class="f-item"><label>身高（cm）</label><input id="in-height" type="number" min="120" max="230" inputmode="numeric"></div>
+        <div class="f-item"><label>体重（kg）</label><input id="in-weight" type="number" min="30" max="200" step="0.5" inputmode="decimal"></div>
+        <div class="f-item"><label>日常活动水平</label><select id="in-act"></select></div>
+      </div>
+    </div>
+    <div class="stats" id="en-stats"></div>
+    <div class="intake-cards" id="intake-cards"></div>
+    <div class="card">
+      <h2 class="sec"><span class="bar"></span>本周训练消耗预估</h2>
+      <div class="burn-list" id="burn-list"></div>
+      <div class="formula-note"><b>计算说明</b>：BMR 采用 Mifflin-St Jeor 公式（男：10×体重 + 6.25×身高 − 5×年龄 + 5；女：−161）；TDEE = BMR × 活动系数；动作消耗 kcal ≈ MET × 体重×(小时)。数据基于通用运动学研究估算，个体差异约 ±20%，请结合体感与体重变化灵活调整。</div>
+    </div>
+  </section>
+
+  <!-- 饮食方案 -->
+  <section class="tab-panel" id="tab-diet">
+    <div id="diet-box"></div>
+    <div class="card">
+      <h2 class="sec"><span class="bar"></span>通用提醒</h2>
+      <ul class="dot">
+        <li>每天饮水 <b>2000-2500ml</b>，训练日补足电解质，脱水会直接削弱训练表现</li>
+        <li>睡眠 <b>7-9 小时</b>：减脂防掉肌肉、增肌促合成，睡眠是训练的一半</li>
+        <li>蛋白粉不是必需品，一日三餐吃够蛋白质即可；吃不够时再考虑补充</li>
+        <li>每周固定时间（晨起空腹）称重，看<b>周平均</b>和<b>腰围变化</b>，不被单日波动影响心态</li>
+        <li>减脂/增肌不要同时追求极限：新手先控饮食 + 跟练计划，8 周后按体型数据再选择专注方向</li>
+      </ul>
+    </div>
+  </section>
+
+  <div class="foot-note">
+    <b>健康声明</b>：本页面内容为一般性健身参考，不构成医疗建议。如有心血管疾病、高血压、关节损伤、孕产期或其他基础疾病，请先咨询医生后再开始训练。动作训练前请充分热身，出现疼痛（非肌肉酸胀）应立即停止。<br>
+    <b>数据说明</b>：能量消耗基于 MET（代谢当量）通用研究数值估算，实际因个体与强度而异。页面数据保存在本设备浏览器本地，清除浏览器数据会一并清除（打卡、身体数据）。<br>
+    健身计划 · 减脂增肌全攻略 · AI 生成
+  </div>
+</div>
+
+<div class="modal-mask" id="modal-mask">
+  <div class="modal" id="modal-body"></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+var EXERCISE_DATA = {"updated":"2026-11-26","met_note":"能量消耗按 MET（代谢当量）估算：kcal ≈ MET × 体重 × 时长，实际因强度与个体差异浮动约±20%","categories":[{"id":"cardio","name":"有氧"},{"id":"chest","name":"胸"},{"id":"back","name":"背"},{"id":"legs","name":"腿臀"},{"id":"shoulder","name":"肩臂"},{"id":"core","name":"核心"},{"id":"fullbody","name":"全身HIIT"}],"exercises":[{"id":"brisk-walk","name":"快走","en":"Brisk Walking","category":"cardio","equipment":"徒手","difficulty":1,"met":4.3,"targets":["下肢","心肺功能","核心"],"intro":"最安全的入门有氧，几乎零门槛，适合大体重的减脂起步与休息日主动恢复。","steps":["抬头挺胸收腹，视线看向前方约10米","手臂自然弯曲约90°随步伐前后摆动","步幅略大于日常走路，前脚跟着地、后脚掌蹬地发力","保持每分钟110-130步的节奏（微微出汗、能说话但不能唱歌）","结束前2-3分钟逐渐放慢速度，再停下"],"tips":["第一周从每次20分钟、每周3次开始，逐渐加到每次30-45分钟","体重较大或有膝盖不适的人优先选快走而非跑步","走斜坡或增加10%速度都能明显提高强度","晚饭后快走有助控制餐后血糖"],"mistakes":["含胸低头看手机——颈部劳损且影响呼吸","步子迈太大、膝盖伸直砸地——膝关节冲击大","只慢悠悠散步——强度太低达不到燃脂效率"],"breathing":"全程鼻吸口呼，节奏均匀不憋气"},{"id":"jog","name":"慢跑","en":"Jogging","category":"cardio","equipment":"徒手","difficulty":1,"met":8.3,"targets":["下肢","心肺功能","核心"],"intro":"燃脂效率与便利性兼顾的经典之王，配速8km/h左右即为标准慢跑。","steps":["身体微前倾，核心收紧，不过度挺胸也不弓背","全脚掌或前脚掌外侧自然落地，落点在重心正下方","膝盖微弯缓冲，步频保持每分钟170-180步","手臂弯曲90°前后摆动，不要左右甩","呼吸保持两步一吸、两步一呼的节奏"],"tips":["新手用「跑走结合」：跑3分钟走1分钟循环，逐步拉长跑步段","先快走5-10分钟热身，结束再慢走3分钟放松","每周跑量增加不超过10%，防止胫骨骨膜炎","穿缓震跑鞋，选择塑胶跑道或土路优于硬水泥"],"mistakes":["落地离重心太远（脚往前伸够）——刹车式跑步，膝盖冲击大","耸肩握拳过紧——上半身紧张浪费能量","步子大步频低——容易膝盖过伸受伤","跑完立刻坐下——血液淤积，应慢走过渡"],"breathing":"两步一吸、两步一呼；冲刺或上坡时改一步一吸一步一呼"},{"id":"jump-rope","name":"跳绳","en":"Jump Rope","category":"cardio","equipment":"徒手","difficulty":2,"met":11.8,"targets":["小腿","肩臂","心肺功能","协调性"],"intro":"单位时间燃脂效率最高的有氧之一，10分钟跳绳的运动量约等于30分钟慢跑。","steps":["绳子长度：单脚踩住绳中点，手柄到胸口高度合适","手肘贴近身体，靠手腕转动摇绳，不是整条手臂抡","前脚掌起跳和落地，跳起时脚跟不触地、膝盖微弯缓冲","每次跳起仅2-4厘米高，刚够过绳即可","目视前方，身体保持正直，节奏由慢到快"],"tips":["新手用「跳30秒、歇30秒」间歇法，累计10分钟","穿缓震鞋并选择塑胶场地，避免在硬瓷砖上长时间跳","跳绳前重点活动脚踝和膝盖，落地轻声是正确标志","体重过大或膝盖有伤者先用椭圆机/快走替代"],"mistakes":["跳得太高、屈膝过多——费力且膝盖压力大","用手臂大抡摇绳——肩很快酸，绳速反而不稳","脚跟重重落地——踝关节和足底筋膜冲击大","绳长不合适——太长卡脚、太短断绳"],"breathing":"节奏均匀，不憋气；可随摇绳节奏鼻吸口呼"},{"id":"spin-bike","name":"动感单车","en":"Spin Bike","category":"cardio","equipment":"器械","difficulty":1,"met":7.0,"targets":["股四头肌","臀肌","腘绳肌","心肺功能"],"intro":"零冲击的高效有氧，对膝盖友好，适合大体重人群与雨天训练日。","steps":["调整座椅：站车旁时座椅与髋同高；坐上后脚蹬在最低点膝盖微弯约25-30°","调整手把与坐垫距离：手臂微弯前伸，背部中立","骑前把脚套扣紧或锁上踏板卡扣","踩踏全程「画圆」：下压→往后刮→上提→往前推，膝盖始终朝正前方","从轻阻力起步踩2-3分钟热身，再进入正式训练"],"tips":["标准减脂节奏：中等阻力下保持90-100转/分钟踩20-30分钟","想提升强度可做「节奏骑行」：2分钟快+1分钟慢循环","座位太低会导致膝盖前侧疼，一定要先调好","心率控制在最大心率（220-年龄）的60%-75%区间燃脂效率好"],"mistakes":["座椅太低，膝盖在最高点抬得很高——膝盖前侧疼痛","上身大幅左右摇晃——腰背代偿，卸掉腿部力量","用脚尖拼命踩——小腿酸胀抽筋，应前脚掌踩全脚发力","一上来就上高阻力猛踩——心肺突然过载"],"breathing":"匀速深呼吸，别憋气；强度段嘴呼鼻吸"},{"id":"elliptical","name":"椭圆机","en":"Elliptical","category":"cardio","equipment":"器械","difficulty":1,"met":5.0,"targets":["下肢","臀肌","肩臂","心肺功能"],"intro":"对关节冲击最低的有氧器械之一，运动轨迹平滑，适合康复期和大体重减脂。","steps":["脚掌完全踩上踏板，脚跟不悬空","膝盖微弯、对准脚尖方向，腹部收紧","全程脚掌贴住踏板不离开，脚跟不翘起","手臂适度握扶手推拉，配合下肢节奏","身体保持直立微前倾，重心稳定不上下弹跳"],"tips":["想加大强度优先调坡度/阻力，而不是拼命加转速","向后蹬（倒蹬）模式能更多刺激臀肌和大腿后侧","身体不上蹿下跳、「静静滑行」才是正确姿态","配合心率手柄或手环把心率控制在燃脂区间"],"mistakes":["踮起脚尖滑——小腿代偿明显，很快僵","膝盖内扣——下肢力线不良，膝内侧受压","整个身体压在扶手上——强度被偷走"],"breathing":"自然均匀，深吸慢呼"},{"id":"stair-climb","name":"爬楼梯","en":"Stair Climbing","category":"cardio","equipment":"徒手","difficulty":2,"met":8.8,"targets":["臀肌","股四头肌","小腿","心肺功能"],"intro":"居家/写字楼最方便的燃脂运动，强度高、强化下肢与心肺。","steps":["脚掌大部分踩在台阶上，脚跟不悬空","上身微前倾，核心收紧，全脚掌发力蹬起","一步一阶，膝盖对准脚尖方向","下楼时膝微弯缓冲，重心放低（下楼冲击大，优先坐电梯下楼）","从持续5分钟开始，逐步累积到15-25分钟"],"tips":["「上楼锻炼、下楼坐电梯」是保护膝盖的黄金原则","手可以轻扶扶手保持平衡，不把重心压在手上","踩不稳或气喘厉害就停下，安全第一","可穿插一步两阶模式提升难度，需在稳定后再练"],"mistakes":["脚跟悬空只用脚尖蹬——踝关节和小腿负荷过大","下楼跑跳——膝盖承受约3倍体重冲击","身体左右晃、偏腿发力——下肢力线紊乱"],"breathing":"匀速鼻吸口呼；爬升强度大时可加深呼吸"},{"id":"swimming","name":"游泳（自由泳）","en":"Freestyle Swimming","category":"cardio","equipment":"器械","difficulty":2,"met":8.3,"targets":["背阔肌","肩部","核心","心肺功能"],"intro":"全身参与、关节零冲击的顶级有氧，兼有塑形效果，适合腰膝不适人群。","steps":["身体平直俯卧水中，头部与躯干成一线，臀部略高","打腿：大腿带动小腿，脚踝放松，像鞭子一样上下交替打水","划水：手入水后抱水沿身体中线向后推至大腿旁出水面","移臂：手肘抬高在空中放松前移入水，指尖先入水","转头换气：随同侧手臂划水顺势转头吸气，脸入水后缓慢鼻/嘴呼气"],"tips":["新手以25米为一个训练段，间歇20-30秒，累计400-600米","先在浅水区练打腿和呼吸节奏，再练完整配合","吸气在空中要快而充分，水下的呼气要均匀连续","热身10分钟重点活动肩关节，防止「游泳肩」"],"mistakes":["抬头呼吸——下肢立刻下沉，阻力剧增","手越过身体中线交叉入水——身体左右蛇形","直臂僵硬划水/打腿不勾脚背——推进效率极低"],"breathing":"空中快吸、水下慢呼，左右交替（或单侧固定节律）"},{"id":"pushup","name":"俯卧撑","en":"Push-up","category":"chest","equipment":"徒手","difficulty":1,"met":5.0,"targets":["胸大肌","肱三头肌","三角肌前束","核心"],"intro":"徒手胸部推力动作的基石，随时随地可练，核心稳定性一并提升。","steps":["双手略宽于肩撑地，手臂伸直，身体从头到脚呈一条直线","核心与臀部夹紧，避免塌腰或撅臀","屈肘缓慢下降至胸部离地约一拳距离，肘与躯干约成45°","胸肌发力集中推起身体至手臂接近伸直，不刻意锁肘","每组按2秒下、1秒上的节奏完成"],"tips":["做不动标准的先练跪姿俯卧撑或双手撑桌沿的上斜俯卧撑","想象「把地面推开」而不是「把身体撑起」，更好找到胸部发力","肩胛骨保持后缩下沉，胸挺出来再推","进阶：负重背包，或把离心下降放慢到3秒"],"mistakes":["塌腰/撅臀——核心失稳，腰椎受压","耸肩含胸——肩关节受伤高发","肘部完全外展成「一字」——肩峰撞击，应保持约45°","下巴先落地——颈部代偿"],"breathing":"下降时吸气，推起时呼气"},{"id":"db-bench-press","name":"哑铃平板卧推","en":"Dumbbell Bench Press","category":"chest","equipment":"哑铃","difficulty":2,"met":5.0,"targets":["胸大肌整体","肱三头肌","三角肌前束"],"intro":"居家增胸主力动作，比杠铃更安全、行程更长，两只手独立发力还能纠正强弱侧。","steps":["平躺哑铃凳，双脚踩实地面，背部自然贴凳","双手持铃置于胸口两侧，掌心朝前（或45°斜对），哑铃大致与身体中线平行","肩胛骨后缩下沉，挺胸沉肋","匀速推起至哑铃在胸口正上方，两铃微微靠拢但不上磕","缓慢下放至大臂与地面平行或再略低，感受胸肌拉伸，重复"],"tips":["重量选择：动作过程中肩部不耸、幅度不缩水的最大重量，减脂期用能做12-15次的重量，增肌期用能做8-12次的重量","手腕保持中立不后折，握不住先用腕带辅助","起铃时先把哑铃放在大腿上借力「蹬腿」翻上胸口，收尾同样","新手先不加重量空手感受轨迹，或先练俯卧撑打基础"],"mistakes":["手臂伸直时肘关节重重对磕——肩肘冲击","下放过浅——胸肌刺激不足，应至少到大臂平行地面","肩胛前引/耸肩——胸刺激被肩三角肌代替","腰部反弓代偿成「桥」——下背受压，力量反而泄掉"],"breathing":"下放吸气，推起时呼气"},{"id":"db-incline-press","name":"上斜哑铃卧推","en":"Incline Dumbbell Press","category":"chest","equipment":"哑铃","difficulty":2,"met":5.0,"targets":["胸大肌上沿","三角肌前束","肱三头肌"],"intro":"把凳背上斜至30-45°，重点打磨胸上沿——让胸部轮廓更饱满的经典变式。","steps":["调凳背上斜约30-45°（接近30°胸上沿刺激更好）","背部完全贴住凳背，头后仰不要离凳","双手持铃于肩部两侧上方，掌心朝前","推起至肩部正上方，顶端两铃靠近不碰撞","缓慢下放至胸口上方约1-3厘米处，感受上胸拉长，重复"],"tips":["上斜时脚踏实地面或踩在凳脚上，身体别左右晃动","起不来时不要猛转手腕卸力——把铃先放回大腿再起身","上斜角度越大，肩部参与越多，不要升到60°以上","胸上沿较弱者把这个动作放在胸日首位"],"mistakes":["凳背太陡练成「肩推」——胸刺激被侵占","下放到胸口后用力反弹借力——肩部危险","头部离凳前探——颈椎受压"],"breathing":"下放吸气，推起呼气"},{"id":"bench-dip","name":"凳上臂屈伸","en":"Bench Dip","category":"chest","equipment":"徒手","difficulty":1,"met":5.0,"targets":["肱三头肌","三角肌后束","胸大肌下沿"],"intro":"一条稳固的凳子/床沿即可练三头，徒手窄距推力的黄金替补。","steps":["背对凳子，双手与肩同宽反撑在凳沿，指尖朝前","双腿前伸脚跟着地（越伸直越难），臀部离凳悬空","肘部朝后（不外展），屈肘让臀部垂直下沉至肘约90°","三头肌发力把自己撑回手臂伸直，重复","肩不要耸，沉肩保持稳定"],"tips":["双脚踩地越近越容易，先半蹲姿势再进阶到直腿","想加重可以把腿抬高放在另一条凳子上","肩部不适者将下沉幅度减半，先练稳定","下沉最深点不要停顿太久，避免肩关节长时间承压"],"mistakes":["肘外飘成C形——肩部挤压受伤","臂膀重心后仰——肩前部压肩峰，危险","臀位前移后蹭——把三头训练变成肩部拉伸"],"breathing":"下沉吸气，撑起呼气"},{"id":"pullup","name":"引体向上","en":"Pull-up","category":"back","equipment":"单杠","difficulty":3,"met":8.0,"targets":["背阔肌","斜方肌中下部","肱二头肌","小臂握力"],"intro":"背部训练的「黄金标准」，自重练背效率最高的动作，上肢力量金字塔尖。","steps":["正握单杠略宽于肩，身体自然悬垂，肩胛骨先主动下沉收紧（「挂住」肩）","想象用肘部「拉向髋部」，背部发力把身体拉起","拉至下巴接近或超过杠面，胸部主动靠近杠","在顶点停顿0.5-1秒，感受背阔肌收缩","缓慢离心下放到手臂伸直（保持3秒更佳），重复"],"tips":["做不了全程先练：弹力带辅助 / 单杠划船 / 跳起慢放（离心引体）","重点用背不用臂：动作前先「挺胸、肘向下向后插口袋」","握力不够用助力带，让训练卡在背上而不是手上","每组不必到力竭计数，能标准完成几个算几个"],"mistakes":["耸肩耸脖子往上「蹭」——斜方肌上部代偿","依靠身体大幅摆动借力（荡秋千）——训练效率低且易伤","下巴使劲往上抬「凑数」——颈椎受压","离心猛放自由落体——肌腱与肘部受冲击"],"breathing":"拉起呼气，下放吸气"},{"id":"inverted-row","name":"澳式划船（低杠划船）","en":"Inverted Row","category":"back","equipment":"器械","difficulty":2,"met":5.0,"targets":["背阔肌","斜方肌中下部","菱形肌","肱二头肌"],"intro":"介于引体与俯身划船之间的「水平拉」，居家练背首选，难度可自由调节。","steps":["把杠（或稳固的桌沿/低单杠）调至髋部高度，双手正握略宽于肩","身体前倾呈直线挂在杠下，脚跟着地，肩胛骨主动收","胸部贴近杠，肘部从身侧向下后方拉起","肩胛充分收紧，顶点停顿1-2秒","缓慢下放至手臂伸直，臀部始终不塌"],"tips":["身体与地面角度越平（脚往前、杠越低）越难，越直越容易——新手从接近直立角度练起","全程保持躯干一条硬板——臀部一放松训练量直接减半","想象「用胸口去碰杠」，肘贴身下拉","每次训练记录脚的位置（步数），作为进阶刻度尺"],"mistakes":["臀部下沉——腰部塌陷代偿","肘部外翻、耸肩——背阔肌几乎休眠","只拉不收——肩胛未主动收紧，背部刺激浅"],"breathing":"拉起呼气，下放吸气"},{"id":"db-row","name":"哑铃单臂划船","en":"Single-Arm Dumbbell Row","category":"back","equipment":"哑铃","difficulty":1,"met":5.0,"targets":["背阔肌","大圆肌","斜方肌中部","肱二头肌"],"intro":"单侧背部训练王牌，行程长、发力孤立感强，同时兼顾改善两侧不平衡。","steps":["单手撑哑铃凳/床沿，另一手持铃，前腿成弓步站稳","背部放平接近与地面平行，腹部收紧，眼看地面（颈中立）","持铃侧肩胛先下沉收紧，肘贴身将哑铃拉向髋部方向","肘到体侧最高点略停1秒，背部充分收缩","缓慢下放至手臂伸直（肩胛不塌），重复换边"],"tips":["想象「肘向臀兜插口袋」，保证用背不用臂硬拽","拉动时应感觉背部夹紧，而非只觉得手臂酸","脊柱不旋转让重量把躯干「拧」起来——臀腿扎稳","减脂选每组12-15次重量，增肌选8-12次重量"],"mistakes":["身体拧转借力——借晃动提铃，背部刺激流火","耸肩、肘外翻——变成斜方肌前束代偿","猛提猛放——冲击肩肘，等于放弃离心收益"],"breathing":"拉起呼气，下放吸气"},{"id":"lat-pulldown","name":"高位下拉","en":"Lat Pulldown","category":"back","equipment":"器械","difficulty":1,"met":5.0,"targets":["背阔肌","大圆肌","肱二头肌"],"intro":"引体向上的「可调重量」版本，健身房练背第一课，女性新手友好。","steps":["坐稳，大腿固定在挡板下，双手略宽于肩正握横杠","身体微后仰约15°，挺胸沉肩","肩胛骨先「沉」下去，再用肘带动将杠拉向下锁骨方向","顶点时肘部指向地面、背部夹紧，停1秒","控制回放到手臂接近伸直，肩胛不完全放松，重复"],"tips":["拉的轨迹是「向锁骨下拉」，不是「拉到颈后」——颈后下拉肩部危险","想象「肘插进后裤袋」，把手当挂钩挂在手上","重量以动作全程不后仰太多为准，背部晃动过大就减","做6-8周能轻松完成体重一半重量，再转去做引体向上"],"mistakes":["身体大幅摇摆借力往下拉","半程完事——离心段快速飞回，全程行程丢失","拉到底过度顶胸耸肩——变成肩部主导"],"breathing":"下拉呼气，放回吸气"},{"id":"barbell-row","name":"杠铃俯身划船","en":"Barbell Row","category":"back","equipment":"杠铃","difficulty":3,"met":6.0,"targets":["背阔肌","斜方肌","菱形肌","竖脊肌","肱二头肌"],"intro":"上肢复合动作强度天花板之一，一次带动整个背厚度的同时也强化下背稳定。","steps":["屈膝下蹲握杠，双脚与髋同宽，掌心朝后正握与肩同宽","髋往后推，上身俯身与地面约45°，脊柱中立、核心绷紧","杠贴小腿位置起动， elbows贴身把杠拉向肚脐方向","杠拉至上腹部，顶点肩胛完全夹紧停1秒","有控制下放至手臂伸直（不砸地），重复"],"tips":["全程下背保持刚性——腰一塌立刻停下减重","新手先用轻重量空杠 / 换哑铃划船练轨迹成熟再加","组间腰酸明显则用助力带，避免训练目标被握力偷走","增肌期可练6-10次/组，重量循序渐进5kg幅度加"],"mistakes":["直腿硬拉式俯身（圆腰）——这是受伤的最常见原因","用「甩身体」的惯性提铃——借力让背刺激归零","行程过短，杠拉到一半就回——背肌全程未充分收缩"],"breathing":"提铃前吸气绷紧核心，完成一次放下时呼气"},{"id":"squat","name":"徒手深蹲","en":"Bodyweight Squat","category":"legs","equipment":"徒手","difficulty":1,"met":5.0,"targets":["股四头肌","臀肌","腘绳肌","核心"],"intro":"动作之王的最简形态，几乎调动全身大肌群，是燃脂与腿部功能性的地基。","steps":["双脚略宽于肩，脚尖外展约15-30°，双臂前平举或胸前抱拳","腹部收紧，目视前方约一点","髋部后推（像坐身后椅子），同时屈膝下蹲，膝盖对准脚尖方向","下蹲至大腿约与地面平行（或能力可控范围），全脚掌抓地不起脚跟","脚跟蹬地、臀腿发力站直，顶点臀部再收紧一下"],"tips":["下蹲前先动动脚趾「抓地」，把重心钉在脚中后部","大腿蹲不到平行没关系，先蹲到「腰不弯的最低点」，逐步加深","膝盖过脚尖不必恐惧——膝盖对准脚尖、不内扣才是关键","进阶：抱哑铃/水瓶做高脚杯深蹲，或放慢离心3秒"],"mistakes":["膝盖内扣——下肢力线最常见问题，女生尤其注意","弯腰驼背/骨盆大幅后翻——腰背受压","脚跟离地、重心全压在脚尖——变成踮深蹲，膝盖遭罪"],"breathing":"下蹲吸气（腹压绷紧），起身呼气"},{"id":"goblet-squat","name":"高脚杯深蹲","en":"Goblet Squat","category":"legs","equipment":"哑铃","difficulty":1,"met":5.0,"targets":["股四头肌","臀肌","核心","上背"],"intro":"双手抱铃在胸前的深蹲变式，胸前配重自动校准躯干姿态，新手最安全的负重蹲法。","steps":["双手捧哑铃一端于胸前贴近身体，肘尖向下","站距略宽于肩，脚尖外展15-30°","屈髋屈膝下蹲，肘部顺大腿内侧下滑（膝盖自然被肘推向外打开）","蹲至大腿平行地面或以下，躯干保持挺直","脚中后部发力站稳，同时保持抱铃在胸不缩回"],"tips":["抱不稳先从较轻重量的哑铃/水壶/背包开始","肘尖「钻」进膝盖内侧，完美解决膝内扣问题","站起阶段用力推进杠铃位置不动——核心全程持续工作","作为减脂腿部第一天动作：3-4组 × 12-15次"],"mistakes":["哑铃随下蹲飘离身体——重心前移，腰背代偿","脚跟离地——重心过前","起身时憋气到头晕——呼吸节奏别丢"],"breathing":"下蹲吸气，起身呼气"},{"id":"lunge","name":"箭步蹲","en":"Walking Lunge","category":"legs","equipment":"徒手","difficulty":1,"met":5.5,"targets":["臀肌","股四头肌","腘绳肌","核心稳定"],"intro":"单腿训练王牌，除了臀腿发力，还强补平衡能力与左右均衡，功能性极强。","steps":["双脚并拢站立，核心收紧","一脚向前跨一大步（约身高的0.4-0.5倍），前脚全掌落地站稳","垂直下蹲至前侧大腿平行地面、后膝接近地面（约1-3厘米，不砸地）","前脚脚跟发力，臀肌带动身体还原（静态箭步蹲）或前腿登地收回换步（行走箭步蹲）","全程上身保持正直微前倾，不左右摇摆"],"tips":["新手先练「静态箭步蹲」（原地分腿），稳定后再练行进式","感觉不稳可以扶墙/门框练习，平衡不是一天练成的","前膝不要完全顶死伸直，始终保持微弯","进阶：双手各持哑铃或后脚垫高的 split squat"],"mistakes":["步幅太小——前膝超过脚尖太多，膝压过大","膝盖内扣、身体歪斜一侧——髋部稳定性不足","后膝猛砸地面——膝盖疼痛警告"],"breathing":"下蹲吸气，起身呼气"},{"id":"bulgarian-split-squat","name":"保加利亚分腿蹲","en":"Bulgarian Split Squat","category":"legs","equipment":"徒手","difficulty":3,"met":6.0,"targets":["臀肌","股四头肌","核心稳定"],"intro":"后脚抬高的单腿蹲变式，深蹲家族最具挑战的动作——练臀翘、补短板、难度可无限进阶。","steps":["面对椅背约1-2步距离站立（大约腿的2/3长度）","后脚背搭上椅面/床沿（约膝盖高度），前脚踏实地面","重心基本压在前腿，上身微前倾（想更多练臀）或更直立（更多练股四头）","垂直下沉至前腿大腿平行地面，后膝接近地面","前腿臀腿发力站直，重复完成后换边"],"tips":["练臀为主：上身前倾至胸口略微过膝，脚跟略前移动","新手双手侧平举保持平衡，或者扶墙；不比配重，先把轨迹做好","动作幅度比重量重要——下蹲深度到位再谈加哑铃","每组每侧8-12次，这是难度很高但收益巨大的动作"],"mistakes":["后腿偷懒、全部重心仍在后侧（跪空）——前腿刺激大减","身体大幅晃动借平衡——宁可减小幅（蹲浅些）","前脚重心转到脚尖，后跟离地"],"breathing":"下蹲吸气，起身呼气"},{"id":"glute-bridge","name":"臀桥","en":"Glute Bridge","category":"legs","equipment":"徒手","difficulty":1,"met":4.0,"targets":["臀大肌","腘绳肌","核心"],"intro":"激活与塑臀的黄金入门动作，办公室久坐族臀部「失忆」时首选，腰友好。","steps":["仰卧屈膝，双脚踩地与髋同宽，脚跟离臀部约一手掌距离","双臂放松放于体侧，掌心朝上","臀部发力将髋部向上顶起，直到肩-髋-膝一条直线","最高点夹紧臀肌保持1-2秒（不是顶腰！）","缓慢下放臀部接近但不完全落地，保持张力，重复"],"tips":["起桥前先「肋骨下压、骨盆后倾一点」，是确保臀部发力不顶腰的关键","感觉不到臀部：脚跟再往回收一点 / 膝盖向外撑一点","进阶：单腿臀桥 / 髋部加弹力带 / 杠铃臀推","久坐腰疼的人每天20次 / 3组即可明显改善臀部感知"],"mistakes":["「顶腰」而不是「顶髋」——腰椎过度伸展；解决方案：顶到感觉臀部收紧就停","脚太远 ——变成练腘绳肌（也行，但不是臀桥主目标）","快速「打挺」没有肌肉控制"],"breathing":"顶起呼气，下放吸气（顶点短憋气收臀也可以）"},{"id":"rdl","name":"哑铃罗马尼亚硬拉","en":"Dumbbell RDL","category":"legs","equipment":"哑铃","difficulty":2,"met":6.0,"targets":["腘绳肌","臀肌","竖脊肌","握力"],"intro":"大腿后链（屁股-大腿后侧）的塑造之王，深蹲的最佳搭档，同时练就漂亮下背控制力。","steps":["双脚与髋同宽站立，双手持哑铃置于大腿前侧，掌心朝后","膝盖微弯固定（约15°），全程保持不变","髋部向后推，让哑铃贴着大腿垂直下放，臀部后移感觉到拉伸","下放到大腿后侧最大拉伸位置（腰不弯、背不下塌，通常在小腿中部）","臀肌发力「夹着」把髋部推回前，站直收紧臀部，重复"],"tips":["动作前用一根木棍贴背自检：木棍全程贴着头/上背/骶骨三点不离开","膝盖角度全程不变——它的「微弯」就像一把卡死的铰链","下放到位的标志是「屁股后墙拉扯感」，不是「地面碰到了」","减脂做12-15次/组，增肌做8-12次/组，重量渐进2.5-5kg"],"mistakes":["把动作练成「扎马步下蹲」——RdL 绕过了髋部折叠","弓腰驼背——腰椎最危险瞬间，立刻减重来校","站起时靠腰部后仰撑直——应用臀肌夹紧带动"],"breathing":"下放吸气（腹压绷住），站直时呼气"},{"id":"leg-press","name":"腿举机","en":"Leg Press","category":"legs","equipment":"器械","difficulty":2,"met":5.0,"targets":["股四头肌","臀肌","腘绳肌"],"intro":"固定轨迹的大重量腿部器械入门首选——对核心平衡要求低，可以安全冲击腿部大强度。","steps":["背部整个贴紧椅背，双脚与肩同宽踩踏板（脚约与膝盖同高）","核心收紧，双手握两侧手柄","屈膝让踏板缓慢下降至膝盖约90°（臀腰不离开椅背）","脚中后部发力蹬起至腿接近伸直，不锁死膝盖","重复12-15次，最后再慢放到底停2秒"],"tips":["脚位越高越练臀，越低越练股四头——可调整尝试","「腰-椅背」一有离缝说明重量太大，会压腰，请减重","下放到臀下沿开始离开椅背前，就是你能控制的最低点","想更燃脂可以每次蹬起后单腿交替做一半（少重量高次数）"],"mistakes":["锁死膝盖「啪」一声弹直——膝关节受冲击","腰臀离开椅背弯起「折身」——腰背最危险","双脚踩太高，脚跟悬空——发力不稳"],"breathing":"下放吸气，蹬起呼气"},{"id":"db-shoulder-press","name":"哑铃肩推","en":"Dumbbell Shoulder Press","category":"shoulder","equipment":"哑铃","difficulty":1,"met":5.0,"targets":["三角肌（前中束为主）","肱三头肌","上胸"],"intro":"宽肩、直角肩的塑造主力，站立做还能顺便要求全身刚性稳定。","steps":["坐姿（带靠背托腰更稳）或站姿，双手持哑铃至耳侧高度，掌心朝前","哑铃大约在耳朵高度或略前，小臂垂直地面","核心收紧（站姿时还要收紧臀部和腹部），肋骨下压","垂直向上推起至手臂接近伸直，哑铃行程略成弧线在头顶靠拢（不磕）","缓慢下放至耳朵旁还原，重复"],"tips":["重量标准：上举过程中脸不仰、腰不塌、幅度不缩水的重量","腰背顶不住就改坐姿靠背式，安全为先","推起时稍微「收着下巴」，防止脖子前伸","想多刺激中束可以改成掌心相对（阿诺德推举变式）"],"mistakes":["身体大幅后仰——腰椎代偿，重量超标标志","在最低点哑铃太靠后/落肩（低于肩膀太多——肩部过度受压）","手臂伸直锁肘震关节"],"breathing":"推起呼气，下放吸气"},{"id":"db-lateral-raise","name":"哑铃侧平举","en":"Lateral Raise","category":"shoulder","equipment":"哑铃","difficulty":1,"met":4.0,"targets":["三角肌中束","斜方肌上部少量"],"intro":"肩部宽度直接来源——三角肌中束的黄金孤立动作，「直角肩」的秘密。","steps":["站姿双脚与髋同宽，双手持轻哑铃自然垂于身体两侧，掌心相对或稍朝后","手肘微弯固定，肩胛骨稍稍下压","向身体两侧抬起手臂至肩同高（略低也可以），掌心略向下倾斜（大拇指朝地一点点）","在肩侧位置停顿1秒，眼看肩侧略靠前而不是正侧方","缓慢有控制下放（约2-3秒离心），张力不松，重复"],"tips":["这个动作重量必须很「垃圾」——每只手2-8kg足以获得训练感","身体轻微前倾一点，更利于中束发力","想象「把手肘提起」，手臂只是挂钩——肩部立刻点燃","把动作想象成「往两侧倒水」，比平举更有效"],"mistakes":["重量过大→耸肩借力斜方肌全程代偿——这是最常见错误","甩起哑铃靠惯性过头——离心完全丢失，等于白做","下放完全放松垂死——张力中断，刺激效率减半"],"breathing":"起呼气，落吸气；轻重量可匀速呼吸"},{"id":"db-curl","name":"哑铃弯举","en":"Dumbbell Curl","category":"shoulder","equipment":"哑铃","difficulty":1,"met":4.0,"targets":["肱二头肌","肱肌","小臂屈肌"],"intro":"手臂「二头」的基础经典，行程长、顶峰可控，练就手臂线条的基础块。","steps":["站姿或坐姿，双手持哑铃自然下垂于身体两侧，掌心朝前","手肘贴近身体（约1-2厘米），肩胛骨稍收紧","屈肘把哑铃举向肩部，腕关节全程保持中立不弯折","顶点收紧二头肌1秒，哑铃不必碰到肩膀","缓慢下放至手臂接近伸直（肘不重锁），重复"],"tips":["重量以「手肘位置完全不动」为准——肘一翻前就变成借力","想要更孤立二头：掌心相对做锤式弯举（更多练肱肌和肱二头长头）","身体可以背靠墙做，防止腰部和肩膀晃动借力","离心放慢到2-3秒，比加重更有感觉"],"mistakes":["身体往后仰惯性甩起——腰椎代偿","肘部「往前飘」——把肘当成支点杠杆，就借用肩部力量","手腕向内折/外翻——腕关节劳损"],"breathing":"举起呼气，下放吸气"},{"id":"triceps-pushdown","name":"绳索下压","en":"Cable Pushdown","category":"shoulder","equipment":"器械","difficulty":1,"met":4.5,"targets":["肱三头肌（长头/外侧头）"],"intro":"绳索器械上三头肌的王牌动作——全程张力不断，三头线条的黄金雕刻器。","steps":["面对龙门架，双脚前后稳定站好，握把（多用绳索把手）在胸口高度","身体微前倾，大臂贴紧身侧指向地面，肘部锁在身体旁","「只有肘关节」参与，让前臂向下压→伸直","压到最底，三头充分收缩，分绳动作能把双手向两边外旋掰开（刺激更深）","缓慢有控制让把手回到胸口高度，肘部全程不离开身侧，重复"],"tips":["肘部一「外飘」或者前部「举起来」——刺激被肩和胸偷走，宁可减重","顶端顶峰收缩挤1-2秒，收缩感是孤立动作的命脉","减脂塑形：12-15次轻重量高次数；增肌：8-12次","家中没有龙门架，可用弹力带绑高处做完全一样的轨迹"],"mistakes":["身体大幅前倾用体重压——胸大肌全接管","肘外飘/耸肩——三头孤立效果归零","回放段自由落体——张力浪费"],"breathing":"下压呼气，放回吸气"},{"id":"plank","name":"平板支撑","en":"Plank","category":"core","equipment":"徒手","difficulty":1,"met":3.5,"targets":["腹横肌","腹直肌","竖脊肌","肩部稳定"],"intro":"核心抗伸展训练的第一课——不需要「动」，却把整条核心链全部逼出来。","steps":["俯撑，双脚适当分立与髋同宽，前臂撑地，肘部在肩膀正下方","从头脑到脚后跟蹬成一条直线——想象背后有一根木棍全贴","腹部用力「缩肋」、臀部收紧，主动用力别「挂在」关节上","视线看地面（颈中立），不抬头不看前方","保持自然呼吸，从20秒开始，逐步累计至45秒-1分钟"],"tips":["如果支撑不下来，立刻退阶——先练跪姿平板（膝盖落地）和斜板（手撑高处）","臀肌夹紧，腰的部位「锁」住，会比摇摇晃晃多撑很久","微微把肘部「往前撑地」+脚尖往后蹬——身体像拉紧的弹簧，瞬间更稳","每组目标「断断续续」反而比坚持弯腰形变 30 秒更有价值"],"mistakes":["塌腰（最常见的错误）——腰椎受压，且核心白撑","撅臀——腹腹假收紧，核心偷懒","抬头、低头——颈椎受压；憋气、血压升高"],"breathing":"短而匀的胸式呼吸——千万别憋气"},{"id":"crunch","name":"卷腹","en":"Crunch","category":"core","equipment":"徒手","difficulty":1,"met":3.8,"targets":["腹直肌上段"],"intro":"腹部训练的最经典动作——比仰卧起坐安全性高一档，新手从它入门。","steps":["仰卧屈膝，双脚踩实地面，双手轻扶耳侧（不要抱头使劲拽）","下巴微收，想象下巴和锁骨间夹一个苹果","腹部发力拉动上背部「卷」离地面约30°（肩胛离地即可）","顶峰停1秒用力呼气挤出腹肌","缓慢下放上背，肩胛刚碰地不放松就接下一次，重复"],"tips":["动作的本质是「肋骨向髋部靠近」，不是「头向前顶」","脖子酸就说明用头带动了——把手放在大腿侧面顺大腿滑上去找节奏也行","如果想练到腹肌下段，可以在卷起的最高点抬一下骨盆","「腹肌不酸而脖子腰酸」的都是错的——宁可少做"],"mistakes":["双手抱头向上拉头——颈椎慢性损伤常见根源","整个上半身坐起来变成仰卧起坐——髋屈肌代偿，腰受压","靠惯性弹跳式地甩起——离心段白丢"],"breathing":"卷起呼气（吐气挤腹），下放吸气"},{"id":"russian-twist","name":"俄罗斯转体","en":"Russian Twist","category":"core","equipment":"徒手","difficulty":1,"met":4.0,"targets":["腹斜肌","腹直肌"],"intro":"侧腹线条（人鱼线）雕刻动作，帮助腰部塑形与转体功能性力量。","steps":["坐姿，屈膝，脚跟可落地（简单）或抬离地面（较难）","上半身后仰约45°，背部挺直不弓腰，想象「挺胸坐在斜板上」","双手合十或持轻哑铃在腹前","转动肩膀带动手臂划向身体一侧触地（或半空停）","控制节奏左右来回转，全程背部不动、以腹斜肌发力"],"tips":["先不加重量——徒手做标准20次再来谈哑铃","转头看手，跟随动作——让腹斜肌被主动使用而不是惯性甩","腰有酸感就说明后仰太多，往前坐起来一点","进阶：双脚离地 / 脚上加哑铃 / 双手持哑铃"],"mistakes":["弯腰弓背——腰椎受压（不是核心发力）","靠惯性快速左右甩——腹肌基本没有参与","身体后仰成「躺平」——变成腰前部骨盆代偿"],"breathing":"转体时呼气，回中时吸气；不憋气"},{"id":"leg-raise","name":"仰卧抬腿","en":"Lying Leg Raise","category":"core","equipment":"徒手","difficulty":1,"met":3.8,"targets":["腹直肌下段","髂腰肌"],"intro":"下腹最难练也最被忽视——这套动作是下腹平坦紧致的核心利器。","steps":["仰卧于垫上，双手自然放于身体两侧，掌心朝下压地","双腿并拢伸直（或微屈膝减难），脚尖自然朝前","用下腹发力，将双腿抬起至与地面约70-90°（腿垂直向上）","在最高点稍微停顿，下腹收紧一下","缓慢有控制地下放到脚跟离地约2-5厘米（不放下、不砸地），重复"],"tips":["腰始终贴地！腰一拱起来就立刻抬得低一点——那才是你能控制的高度","下放越慢越有效——这里2-3秒的离心是腹肌刺激命脉","新手可以先做屈膝版（双膝弯曲抬腿），下腹力量上来再伸直","练到「下腹有火辣感」说明练对了地方"],"mistakes":["腰拱离地面、骨盆前倾——腰椎在「扛」腿重，非常危险","靠惯性快速甩上去——全程没腹肌啥事","腿下放到完全贴地休息——张力中断"],"breathing":"抬腿呼气，下放吸气"},{"id":"mountain-climber","name":"登山跑","en":"Mountain Climber","category":"core","equipment":"徒手","difficulty":2,"met":8.0,"targets":["腹直肌","腹斜肌","肩部稳定","心肺功能"],"intro":"核心+有氧双料动作，HIIT 常客——核心稳定中提高心率，燃脂效率相当高。","steps":["从平板支撑姿势开始（手臂撑直），背部与腿蹬直","腹部收紧，右膝快速屈向胸口方向（不落地或轻触地）","右腿蹬回的同时左膝屈向胸口，两腿像「跑步」一样交替","臀位略抬高一点点可以减轻下背压力，但身体从头到臀仍接近直线","保持节奏均匀；计时训练如30秒动、15秒歇"],"tips":["核心先稳，再求速度——身体左右晃就是肩膀和核心在偷懒","新手先把腿抬高做「慢登山」，全程稳定后再提速","每次膝盖「顶到」胸口时主动呼气一下，更容易保持核心张力","肩、手腕支撑有先做前兆疼痛者，先练平板支撑打基本功"],"mistakes":["臀部高高撅起——核心和肩膀的量都流失","手臂松软前后晃——肩膀在承载冲击","脚咚咚落地——踝关节受累"],"breathing":"短促匀速呼吸，不憋气（发力时快呼）"},{"id":"dead-bug","name":"死虫式","en":"Dead Bug","category":"core","equipment":"徒手","difficulty":1,"met":3.8,"targets":["腹横肌","腹直肌","腰部稳定"],"intro":"腰部最安全的腹肌训练——背部全程贴地，专门强化「抗伸展」的核心底层功能。","steps":["仰卧，屈髋屈膝90°（大腿垂直地面，小腿与地面平行）","双臂伸直指向天花板","腰部发力向下压住地面（腰后不留缝隙）","缓慢伸出对侧手和腿（如右手后伸直、左腿前伸低至离地约10-15厘米）","收回原位后另一侧重复，全程腰部保持贴地不松"],"tips":["腰后方如果离地，说明幅度太多——先别伸那么远（哪怕只挪出去20厘米）","动作前把肋骨向下「压缩」向下腹，再开始动肢——这是关键前提","可在腰背下压一条毛巾、教练/自己抽不出来，是标准的绝佳自检","想加难度：手里握轻哑铃 / 把对侧交换改为「同手同脚」的同侧变式"],"mistakes":["腰拱起来——核心稳定目标完全失守，是最典型的错误","动腿伸手太快——这不是速度比赛","闭气硬撑——呼吸节奏是核心深部激活的信号"],"breathing":"伸肢时吸气，收回时呼气；全腹部保持适当张力"},{"id":"bird-dog","name":"鸟狗式","en":"Bird Dog","category":"core","equipment":"徒手","difficulty":1,"met":3.8,"targets":["竖脊肌","臀肌","腹横肌"],"intro":"四足跪姿的核心稳定训练——腰突人群友好型动作，练出下背核心耐力。","steps":["四点跪姿，手在肩正下方、膝在髋正下方","像身后有根木棍贴着头、背、臀——背部放平","右手向前伸直、左脚同时向后蹬伸至与躯干同高（与地面平行）","在伸展末点稳定1-2秒，想象反侧手和对侧脚在彼此远离","缓慢收回手膝，轻碰地或悬空换边，重复"],"tips":["屁股夹紧、肚脐内收，身体会立刻稳定得多","动作过程身体不左右翻骨盆——可以背上放一杯水试稳定性（谨慎自测）","练8-10次/组就够，重在精准不重速到20次","可以做「肘碰膝」变式：在末端收回手膝于腹下碰一下再伸展"],"mistakes":["腿抬太高向后「翻臀」——腰椎代偿伸展","肩部不对称、身体左右倾斜——稳定性不足信号","手臂/腿伸出去时身体重心「塌」向支撑侧——平衡丢失"],"breathing":"伸展时吸气，还原时呼气；不憋气"},{"id":"burpee","name":"波比跳","en":"Burpee","category":"fullbody","equipment":"徒手","difficulty":3,"met":8.0,"targets":["全身","心肺功能"],"intro":"有氧无氧结合的「终极燃脂动作」——一个动作打完胸、腿、核心、心肺全部。","steps":["站立开始，屈髋俯身双手撑地","双脚向后跳出成平板支撑位（身体放直，核心收紧）","（可选）完成一个俯卧撑","双脚向前收回跳至手外侧，蹲姿","垂直跳起，双臂过头击掌，落地缓冲接下一次"],"tips":["新手去除俯卧撑、无跳（站起代替纵跳），从「四步波比」开始","以「次数×质量」为目标，形变了就停下来休息——硬撑形变反而危险","高强度间歇用这种方式跑：20秒全力波比 + 40秒休息 × 8轮","全程收紧核心，落地屈膝缓冲保护膝盖和脚踝"],"mistakes":["撑地时塌腰撅臀——腰椎冲击大","跳回平板时手离地太宽/太远——肩膀不稳定","耸肩硬砸肩关节","落地直膝僵硬——踝膝压力大"],"breathing":"撑地吸气，起跳呼气；可自然呼吸但别憋气超过2秒"},{"id":"jumping-jack","name":"开合跳","en":"Jumping Jack","category":"fullbody","equipment":"徒手","difficulty":1,"met":8.0,"targets":["肩部","小腿","全身协调","心肺功能"],"intro":"最简单的全身热身/燃脂动作，作为 HIIT 循环与热身环节万金油。","steps":["站立，双脚并拢，双臂自然下垂","轻轻跳起，双脚向外落地至略宽于肩，同时双臂经体侧上举至头顶击掌（或举至平行）","再跳回时双脚并拢，双臂放回体侧","保持节奏轻快，落地前脚掌先触地缓冲","肩部放松不耸，抬头挺胸"],"tips":["作为热身：30-45秒一组，2组；作为 HIIT：30秒全力+30秒休息","膝踝不适者用「无跳版本」：左右侧点步+举臂（效果依然在线）","始终轻落地面——落地声音越大冲击越大","手臂一举一落就是肩部活动度训练，别偷懒只摆半程"],"mistakes":["落地全脚掌重重拍地——踝膝冲击","手臂只举到一半——训练量减","身体左右歪斜重心不稳"],"breathing":"匀速呼吸——开呼合吸或自然呼吸"},{"id":"squat-jump","name":"深蹲跳","en":"Squat Jump","category":"fullbody","equipment":"徒手","difficulty":2,"met":8.0,"targets":["股四头肌","臀肌","小腿","爆发力"],"intro":"下肢爆发力+燃脂双优等生，把深蹲的输出拉到速度维度。","steps":["按深蹲姿势下蹲至大腿约平行地面，手臂自然后摆","手臂快速上摆带动，同时臀腿爆发力向上纵跳","空中身体舒展，手臂高举过头","以前脚掌先落地过渡到全脚，屈髋屈膝缓冲沉入下一次深蹲位","落地即「接蹲」，不停滞，保持节奏"],"tips":["落地缓冲「就像猫」一样落地无声，是保护膝盖的核心要求","先徒手深蹲做到16次以上很轻松再加这个动作","膝盖、脚踝有伤时直接跳过这个动作，选其他有氧","进阶可持轻哑铃或做纵跳摸高"],"mistakes":["落地直膝硬砸——膝关节冲击很大","跳起高度追求过高而身体失控","落地膝盖内扣——下肢力线严重错误"],"breathing":"起跳前吸气，落地时快速呼气"},{"id":"high-knees","name":"高抬腿","en":"High Knees","category":"fullbody","equipment":"徒手","difficulty":1,"met":8.0,"targets":["髂腰肌","股四头肌","小腿","心肺功能"],"intro":"原地即可飙升心率的经典燃脂动作，还能强化屈髋肌群，改善跑步腿抬高能力。","steps":["站立，核心收紧，目视前方","快速交替提膝至大腿与地面平行或更高","前脚掌着地、触地即起，快速「点地」弹起","手臂如跑步姿势自然摆动配合节奏","先从20秒短组开始适应，再逐步延长"],"tips":["膝抬不必追求胸口，能平行地面就行，重频率不重高度","身体微前倾、核心锁定，避免后仰踢肚子","作为 HIIT：30秒高抬腿+30秒休息×6轮即可达到很高的燃脂效率","穿有缓震的鞋，或选择软质地面"],"mistakes":["身体大幅后仰——腹部松懈","全脚掌/脚跟重踩地面——冲击直接打到膝盖","只靠小腿点地不动髋部——强度虚低"],"breathing":"短促频率呼吸，不憋气"}]};
+var PLAN_DATA = {"updated":"2026-11-26","plans":[{"id":"fat_loss","name":"减脂计划","subtitle":"力量保肌 + 有氧燃脂 · 每周5练2休 · 4周一循环","audience":"目标是减脂减重、塑造线条的人群；新手可直接跟随，老手可按第3-4周进阶","principles":["力量训练优先于有氧：先练力量再练有氧，保留肌肉才能守住代谢","每周5练2休，力量日30分钟 + 有氧15-20分钟，总时长控制在50-70分钟","有氧强度控制在「微喘、能说短句」的区间（最大心率的60%-75%）","配合每天300-500kcal的热量缺口，减脂速度每周0.5-1kg为理想区间","睡眠7-8小时；熬夜会显著升高皮质醇，让减脂事倍功半"],"week_notes":["第1周·适应期：所有动作用最简单版本，重点是动作标准而非重量，有氧从中低强度起步","第2周·正式期：按计划组数次数完整执行，有氧保持规定时长","第3周·进阶期：力量动作每组次数+2或小幅加重量，有氧+5分钟","第4周·强化期：有氧+10分钟或将其中1次换成HIIT，饮食缺口保持住，之后循环回第1周重新评估"],"days":[{"day":1,"title":"胸 + 三头 + 有氧","type":"力量 + 有氧","rest":false,"focus":"推力日，练完立刻接有氧","items":[{"exercise":"pushup","sets":4,"reps":"10-15次","rest":"60秒","duration_min":8,"note":"做不动标准版换跪姿"},{"exercise":"db-bench-press","sets":3,"reps":"12-15次","rest":"60秒","duration_min":8,"note":"无哑铃用俯卧撑变式代替"},{"exercise":"db-incline-press","sets":3,"reps":"12-15次","rest":"60秒","duration_min":8,"note":"上胸饱满的关键"},{"exercise":"bench-dip","sets":3,"reps":"12-15次","rest":"45秒","duration_min":6,"note":"床沿或凳子即可"},{"exercise":"spin-bike","sets":1,"reps":"15-20分钟","rest":"-","duration_min":18,"note":"中等阻力90-100转/分，或慢跑代替"}]},{"day":2,"title":"背 + 二头 + 有氧","type":"力量 + 有氧","rest":false,"focus":"拉力日，改善圆肩驼背","items":[{"exercise":"inverted-row","sets":4,"reps":"8-12次","rest":"75秒","duration_min":9,"note":"桌沿/低杠均可"},{"exercise":"db-row","sets":3,"reps":"12-15次","rest":"60秒","duration_min":9,"note":"每侧各完成后再换边"},{"exercise":"lat-pulldown","sets":3,"reps":"12-15次","rest":"60秒","duration_min":8,"note":"居家用弹力带高位下拉代替"},{"exercise":"db-curl","sets":3,"reps":"12-15次","rest":"45秒","duration_min":6,"note":"轻重量慢离心"},{"exercise":"jump-rope","sets":1,"reps":"10-15分钟","rest":"-","duration_min":13,"note":"跳30秒歇30秒累计，或快走35分钟代替"}]},{"day":3,"title":"有氧燃脂日 + 核心","type":"有氧","rest":false,"focus":"中低强度长时间有氧，脂肪供能比例最高","items":[{"exercise":"jog","sets":1,"reps":"25-35分钟","rest":"-","duration_min":30,"note":"微喘能说话的配速；膝盖不适改椭圆机"},{"exercise":"plank","sets":3,"reps":"30-45秒","rest":"45秒","duration_min":5,"note":"腰不塌是唯一标准"},{"exercise":"leg-raise","sets":3,"reps":"12-15次","rest":"45秒","duration_min":5,"note":"下腹收紧"},{"exercise":"dead-bug","sets":3,"reps":"每侧8-10次","rest":"30秒","duration_min":5,"note":"腰背始终贴地"}]},{"day":4,"title":"腿臀 + 有氧","type":"力量 + 有氧","rest":false,"focus":"大肌群训练日，热量消耗最高的一天","items":[{"exercise":"goblet-squat","sets":4,"reps":"12-15次","rest":"75秒","duration_min":10,"note":"胸前抱哑铃或背包"},{"exercise":"lunge","sets":3,"reps":"每侧10-12次","rest":"60秒","duration_min":9,"note":"先静态后原地跨步"},{"exercise":"glute-bridge","sets":3,"reps":"15-20次","rest":"45秒","duration_min":6,"note":"顶端夹臀1-2秒"},{"exercise":"rdl","sets":3,"reps":"12-15次","rest":"60秒","duration_min":8,"note":"髋部后推，背放平"},{"exercise":"stair-climb","sets":1,"reps":"10-15分钟","rest":"-","duration_min":13,"note":"只爬上不跑下，下楼坐电梯"}]},{"day":5,"title":"肩 + 核心 + HIIT","type":"力量 + HIIT","rest":false,"focus":"直角肩塑形 + 高强度间歇冲刺","items":[{"exercise":"db-shoulder-press","sets":4,"reps":"12-15次","rest":"60秒","duration_min":9,"note":"腰不后仰"},{"exercise":"db-lateral-raise","sets":3,"reps":"15-20次","rest":"45秒","duration_min":6,"note":"轻重量，别耸肩"},{"exercise":"russian-twist","sets":3,"reps":"每侧15次","rest":"45秒","duration_min":5,"note":"侧腹有感觉才有效"},{"exercise":"mountain-climber","sets":4,"reps":"30秒","rest":"30秒","duration_min":4,"note":"HIIT：30秒全速+30秒休息"},{"exercise":"burpee","sets":4,"reps":"8-10次","rest":"45秒","duration_min":7,"note":"初阶版去掉俯卧撑和纵跳"}]},{"day":6,"title":"主动恢复日","type":"恢复","rest":true,"focus":"低强度活动促进血液循环，加速恢复","items":[{"exercise":"brisk-walk","sets":1,"reps":"30-40分钟","rest":"-","duration_min":35,"note":"饭后遛弯强度即可，能轻松聊天"},{"exercise":"bird-dog","sets":2,"reps":"每侧8-10次","rest":"30秒","duration_min":4,"note":"唤醒下背与核心"}]},{"day":7,"title":"休息日","type":"休息","rest":true,"focus":"彻底休息，让身体完成超量恢复","items":[]}]},{"id":"muscle_gain","name":"增肌计划","subtitle":"五分化训练 · 每周4-5练 · 4周一循环 · 渐进超负荷","audience":"目标是增肌增重、提升力量的人群；建议有一定动作基础（约2-3个月训练经验）后进入","principles":["渐进超负荷是增肌第一原则：每1-2周尝试增加重量或次数，记录训练日志","每个肌群每周训练10-20个正式组，复合动作优先，孤立动作补充","增肌期热量盈余200-400kcal，蛋白质每公斤体重1.6-2.2g","组间休息：复合动作（深蹲/卧推/划船）90-120秒，孤立动作60-75秒","睡眠7-9小时——肌肉在休息中生长，练是消耗，睡和吃才是生长"],"week_notes":["第1周·适应期：重量选择「能标准完成所有组数、最后2次略吃力」的程度，先建立动作记忆","第2周·加载期：所有动作重量+2.5%，次数不变；完成不了的记录降回","第3周·强化期：复合动作再+2.5%，孤立动作次数+2","第4周·冲刺期：冲击新的最大重量或最大次数（做好保护），随后轻微减量一周（-15%容量）再循环"],"days":[{"day":1,"title":"胸 + 三头","type":"力量","rest":false,"focus":"推力主力日","items":[{"exercise":"db-bench-press","sets":4,"reps":"8-12次","rest":"90秒","duration_min":10,"note":"增肌核心区间8-12次"},{"exercise":"db-incline-press","sets":4,"reps":"8-12次","rest":"90秒","duration_min":10,"note":"30-45°上斜"},{"exercise":"pushup","sets":3,"reps":"至力竭","rest":"75秒","duration_min":6,"note":"收尾榨干胸部；离心放3秒"},{"exercise":"bench-dip","sets":3,"reps":"12-15次","rest":"60秒","duration_min":6,"note":"三头轰炸"},{"exercise":"triceps-pushdown","sets":3,"reps":"12-15次","rest":"60秒","duration_min":7,"note":"顶峰收缩1秒；居家用弹力带"}]},{"day":2,"title":"背 + 二头","type":"力量","rest":false,"focus":"拉力主力日，倒三角的秘密","items":[{"exercise":"pullup","sets":4,"reps":"5-10次","rest":"120秒","duration_min":10,"note":"做不够5次用弹力带辅助或换澳式划船"},{"exercise":"barbell-row","sets":4,"reps":"8-12次","rest":"120秒","duration_min":11,"note":"背放平是底线，腰酸立刻减"},{"exercise":"lat-pulldown","sets":3,"reps":"10-12次","rest":"90秒","duration_min":8,"note":"拉向锁骨方向"},{"exercise":"db-row","sets":3,"reps":"10-12次","rest":"75秒","duration_min":9,"note":"单侧孤立补短板"},{"exercise":"db-curl","sets":3,"reps":"8-12次","rest":"60秒","duration_min":6,"note":"慢离心2-3秒"}]},{"day":3,"title":"休息/轻活动","type":"休息","rest":true,"focus":"恢复日，可做20-30分钟散步促进恢复","items":[{"exercise":"brisk-walk","sets":1,"reps":"20-30分钟","rest":"-","duration_min":25,"note":"可选；保持热量盈余日的活动量"}]},{"day":4,"title":"腿 + 臀","type":"力量","rest":false,"focus":"增长激素分泌最猛的一天，练腿不能逃","items":[{"exercise":"goblet-squat","sets":4,"reps":"8-12次","rest":"120秒","duration_min":11,"note":"重量循序渐进每2周+2.5kg"},{"exercise":"rdl","sets":4,"reps":"8-12次","rest":"120秒","duration_min":11,"note":"后链拉长-缩短全程"},{"exercise":"bulgarian-split-squat","sets":3,"reps":"每侧8-10次","rest":"90秒","duration_min":10,"note":"练臀王牌，做稳为先"},{"exercise":"lunge","sets":3,"reps":"每侧10-12次","rest":"90秒","duration_min":9,"note":"可选持哑铃"},{"exercise":"glute-bridge","sets":3,"reps":"15-20次","rest":"60秒","duration_min":6,"note":"收尾榨干臀部"}]},{"day":5,"title":"肩 + 核心","type":"力量","rest":false,"focus":"宽肩直角肩塑形","items":[{"exercise":"db-shoulder-press","sets":4,"reps":"8-12次","rest":"90秒","duration_min":10,"note":"站姿更要求核心刚性"},{"exercise":"db-lateral-raise","sets":4,"reps":"15-20次","rest":"60秒","duration_min":8,"note":"中束宽度的直接来源"},{"exercise":"pushup","sets":2,"reps":"至力竭","rest":"90秒","duration_min":5,"note":"补一次上胸+前束"},{"exercise":"plank","sets":3,"reps":"45-60秒","rest":"60秒","duration_min":5,"note":"核心稳定基石"},{"exercise":"mountain-climber","sets":3,"reps":"30秒","rest":"30秒","duration_min":3,"note":"核心 + 心肺收尾"}]},{"day":6,"title":"弱项强化 + HIIT（可选）","type":"补充训练","rest":false,"focus":"只有恢复得动才练；身体疲惫就改休息","items":[{"exercise":"squat-jump","sets":4,"reps":"10-12次","rest":"75秒","duration_min":7,"note":"爆发力与心肺"},{"exercise":"jumping-jack","sets":2,"reps":"45秒","rest":"30秒","duration_min":2,"note":"热身组"},{"exercise":"high-knees","sets":4,"reps":"30秒","rest":"30秒","duration_min":4,"note":"HIIT收尾"},{"exercise":"russian-twist","sets":3,"reps":"每侧15次","rest":"45秒","duration_min":5,"note":"侧腹线条"}]},{"day":7,"title":"休息日","type":"休息","rest":true,"focus":"完全休息 + 复盘本周训练日志，计划下周重量","items":[]}]}],"diet":[{"id":"fat_loss","name":"减脂饮食方案","tagline":"总原则：热量缺口300-500kcal · 高蛋白 · 少油少糖 · 不节食不挨饿","principles":["每日蛋白质1.6-2.0g/kg体重（如70kg约112-140g），保住肌肉不流失、饱腹感持久","主食减半但不戒断：白米饭/面条换成杂粮饭、燕麦、红薯、玉米，精力更稳","每餐一掌心蛋白质 + 一拳主食 + 两拳蔬菜，先吃菜和肉、后吃饭，血糖更平稳","戒含糖饮料、油炸零食，这两项是隐形热量炸弹；换成无糖茶/黑咖啡/气泡水","喝水每天2000-2500ml；训练日可以在运动后30分钟内补充蛋白质+少量碳水"],"meals":[{"name":"早餐","time":"7:00-9:00","content":"水煮蛋2个 + 燕麦50g + 无糖豆浆/低脂牛奶250ml + 小番茄一小把"},{"name":"午餐","time":"12:00-13:00","content":"杂粮饭一拳 + 鸡胸肉/瘦牛肉/鱼虾150g + 绿叶蔬菜两拳（少油清炒）"},{"name":"训练前加餐","time":"练前1小时","content":"香蕉一根或全麦面包一片 + 黑咖啡一杯（可选）"},{"name":"晚餐","time":"18:00-19:30","content":"主食减半（半拳）+ 豆腐/虾仁/鸡蛋 + 大量蔬菜汤/凉拌菜；睡前3小时不进食"}]},{"id":"muscle_gain","name":"增肌饮食方案","tagline":"总原则：热量盈余200-400kcal · 高蛋白 · 碳水吃够 · 睡前一餐促修复","principles":["每日蛋白质1.6-2.2g/kg体重，分4-5次摄入，单次吸收利用更充分","碳水是训练的燃料：练前1-2小时必须吃主食，练后30-60分钟补充快碳+蛋白","增重困难户（瘦体质）可以加2-3勺花生酱、坚果、牛奶或用增肌粉补充热量","不靠炸鸡奶茶「脏增肌」——脂肪涨太快，增肌质量差还增加内脏负担","每周固定时间空腹称重：每周增重0.25-0.5kg为理想速度，超了就减一点碳水"],"meals":[{"name":"早餐","time":"7:00-8:30","content":"全蛋2个+蛋白3个 + 全麦面包2片 + 牛奶250ml + 香蕉一根，共约550-650kcal"},{"name":"上午加餐","time":"10:30","content":"无糖酸奶一杯 + 一小把坚果（约15g）"},{"name":"午餐","time":"12:00-13:00","content":"米饭1.5-2拳 + 鸡腿肉/牛肉/鱼虾200g + 蔬菜两拳 + 橄榄油烹调"},{"name":"练前餐","time":"练前1.5小时","content":"米饭/面条一份 + 鸡胸肉100g，练前有糖有力气才有训练容量"},{"name":"练后餐","time":"练后30分钟内","content":"蛋白粉一勺（或鸡蛋3个+牛奶）+ 快碳（白米饭/香蕉/蜂蜜水），抢修复窗口"},{"name":"睡前餐","time":"睡前1小时","content":"缓释蛋白：低脂奶酪/希腊酸奶/酪蛋白粉，夜间持续供氨基酸"}]}]};
+/* 健身计划 · 页面逻辑（零依赖） */
+(function () {
+  "use strict";
+  var EXERCISES = EXERCISE_DATA.exercises;
+  var CATS = {};
+  EXERCISE_DATA.categories.forEach(function (c) { CATS[c.id] = c.name; });
+  var PLANS = {};
+  PLAN_DATA.plans.forEach(function (p) { PLANS[p.id] = p; });
+  var DIETS = {};
+  PLAN_DATA.diet.forEach(function (d) { DIETS[d.id] = d; });
+  var DIFFS = { 1: "初级", 2: "中级", 3: "高级" };
+  var ACTS = [
+    { v: 1.2, name: "久坐（几乎不运动）" },
+    { v: 1.375, name: "轻度活动（每周练1-3天）" },
+    { v: 1.55, name: "中度活动（每周练3-5天）" },
+    { v: 1.725, name: "高强度（每周练6-7天）" },
+    { v: 1.9, name: "运动员/体力劳动" }
+  ];
+  var LS = "fpsite.v1.";
+  var state = {
+    mode: load(LS + "mode", "fat_loss"),
+    tab: "plan",
+    filters: { cat: "all", eq: "all", diff: "all", q: "" },
+    profile: load(LS + "profile", { gender: "male", age: 30, height: 170, weight: 65, act: 1.55 }),
+    checkin: load(LS + "checkin", {})
+  };
+
+  function load(k, dft) { try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : dft; } catch (e) { return dft; } }
+  function save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  function $(s, p) { return (p || document).querySelector(s); }
+  function $$(s, p) { return Array.prototype.slice.call((p || document).querySelectorAll(s)); }
+  function exById(id) { for (var i = 0; i < EXERCISES.length; i++) if (EXERCISES[i].id === id) return EXERCISES[i]; return null; }
+  function kcal(met, min, kg) { return Math.round(met * kg * (min / 60)); }
+  function todayKey(n) { var d = new Date(); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
+  function todayDayNum() { var w = new Date().getDay(); return w === 0 ? 7 : w; }
+  function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
+  function toast(msg) { var t = $("#toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(t._h); t._h = setTimeout(function () { t.classList.remove("show"); }, 1600); }
+
+  /* ───── 计划 Tab ───── */
+  function renderPlan() {
+    var plan = PLANS[state.mode];
+    var kg = state.profile.weight;
+    var box = $("#plan-box");
+    var html = "";
+
+    // 顶部统计
+    var weekKcal = 0, trainDays = 0, weekMin = 0;
+    plan.days.forEach(function (d) { if (!d.rest) trainDays++; d.items.forEach(function (it) { var ex = exById(it.exercise); if (ex) { weekKcal += kcal(ex.met, it.duration_min, kg); weekMin += it.duration_min; } }); });
+    $("#plan-stats").innerHTML =
+      statCard(DIETS[state.mode].id === "fat_loss" ? "🔥" : "💪", plan.name, plan.subtitle) +
+      statCard2("本周训练", trainDays + " 天") +
+      statCard2("预计时长", weekMin + " 分钟") +
+      statCard2("预计消耗", Math.round(weekKcal * 0.6) + " ~ " + Math.round(weekKcal * 1.4) + " <small>kcal</small>", true);
+
+    // 4周进阶
+    html += '<div class="week-notes">' + plan.week_notes.map(function (n, i) {
+      return '<div class="wnote"><b>第' + (i + 1) + '周</b>' + esc(n.split("：")[1] || n) + '</div>';
+    }).join("") + '</div>';
+
+    // 循环说明
+    html += '<div class="card"><h2 class="sec"><span class="bar"></span>训练原则</h2><ul class="dot">' +
+      plan.principles.map(function (p) { return "<li>" + esc(p) + "</li>"; }).join("") + "</ul></div>";
+
+    // 7 天卡片
+    var tdn = todayDayNum();
+    var todayName = ["周日", "周一", "周二", "周三", "周四", "周五", "周六"][new Date().getDay()];
+    plan.days.forEach(function (d) {
+      var dayKcal = 0, dayMin = 0, rowHtml = "";
+      if (d.rest && d.items.length === 0) {
+        rowHtml = '<div class="empty-tip"><span class="big">😴</span>' + esc(d.focus) + '</div>';
+      } else {
+        d.items.forEach(function (it) {
+          var ex = exById(it.exercise);
+          if (!ex) return;
+          dayKcal += kcal(ex.met, it.duration_min, kg);
+          dayMin += it.duration_min;
+          var done = isChecked(d.day, it.exercise);
+          rowHtml +=
+            '<div class="ex-row' + (done ? " done" : "") + '" data-ex="' + ex.id + '">' +
+              '<button class="ck" data-day="' + d.day + '" data-exid="' + ex.id + '" aria-label="打卡"></button>' +
+              '<div class="ex-main"><div class="ex-name">' + esc(ex.name) + '</div>' +
+              '<div class="ex-sub">' + it.sets + " × " + esc(it.reps) + (it.note ? " · " + esc(it.note) : "") + '</div></div>' +
+              '<div class="ex-kcal"><div class="v">' + kcal(ex.met, it.duration_min, kg) + '</div><div class="u">kcal</div></div>' +
+            '</div>';
+        });
+      }
+      var isToday = d.day === tdn;
+      var doneCnt = d.items.filter(function (it) { return isChecked(d.day, it.exercise); }).length;
+      var total = d.items.length;
+      var pct = total ? Math.round(doneCnt / total * 100) : (d.rest ? 100 : 0);
+      html +=
+        '<div class="card day-card' + (isToday ? " today" : "") + '">' +
+          '<div class="day-top"><span class="dnum">' + "周" + "一二三四五六日".charAt(d.day - 1) + (isToday ? " · 今天" : "") + '</span>' +
+          '<span class="dttl">' + esc(d.title) + '</span><span class="tag">' + esc(d.type) + '</span>' +
+          (d.rest ? '<span class="rest-tag" style="font-size:12px;font-weight:700">休息为主</span>' : "") + '</div>' +
+          '<div class="meta"><span>⏱ 约 <b>' + dayMin + '</b> 分钟</span><span>🔥 预计消耗 <b>' + dayKcal + '</b> kcal<span style="color:var(--dim)">（按 ' + kg + 'kg 体重）</span></span></div>' +
+          '<div class="focus-line">' + esc(d.focus) + '</div>' + rowHtml +
+          (total ? '<div class="prog-wrap"><div class="prog"><i style="width:' + pct + '%"></i></div><span>' + doneCnt + "/" + total + " 已完成 · " + todayKey() + '</span></div>' : "") +
+        '</div>';
+    });
+    box.innerHTML = html;
+
+    // 事件：打卡 & 打开教程
+    $$("#plan-box .ck").forEach(function (btn) {
+      btn.addEventListener("click", function (e) {
+        e.stopPropagation();
+        var day = +btn.getAttribute("data-day");
+        var exId = btn.getAttribute("data-exid");
+        toggleCheck(day, exId);
+        renderPlan();
+      });
+    });
+    $$("#plan-box .ex-row").forEach(function (row) {
+      row.addEventListener("click", function () { openModal(row.getAttribute("data-ex")); });
+    });
+  }
+  function statCard(icon, name, sub) {
+    return '<div class="stat"><div class="v" style="font-size:17px;line-height:1.3">' + icon + " " + esc(name) + '</div><div class="k">' + esc(sub) + '</div></div>';
+  }
+  function statCard2(k, v, accent) {
+    return '<div class="stat' + (accent ? "" : " plain") + '"><div class="v">' + v + '</div><div class="k">' + k + '</div></div>';
+  }
+  function ckKey() { return state.mode + ":" + todayKey(); }
+  function getTodayChecks() { return state.checkin[ckKey()] || {}; }
+  function isChecked(day, exId) { var t = getTodayChecks(); return t[day] && t[day].indexOf(exId) >= 0; }
+  function toggleCheck(day, exId) {
+    var t = getTodayChecks();
+    if (!t[day]) t[day] = [];
+    var i = t[day].indexOf(exId);
+    if (i >= 0) t[day].splice(i, 1); else t[day].push(exId);
+    state.checkin[ckKey()] = t;
+    save(LS + "checkin", state.checkin);
+    if (t[day] && t[day].length) toast("已完成 " + esc(exById(exId).name) + " 💪");
+  }
+
+  /* ───── 动作库 Tab ───── */
+  function renderLibrary() {
+    var f = state.filters, kg = state.profile.weight;
+    var list = EXERCISES.filter(function (e) {
+      if (f.cat !== "all" && e.category !== f.cat) return false;
+      if (f.eq !== "all" && e.equipment !== f.eq) return false;
+      if (f.diff !== "all" && e.difficulty !== +f.diff) return false;
+      if (f.q) {
+        var q = f.q.toLowerCase();
+        var hay = (e.name + e.en + e.targets.join("") + (e.intro || "")).toLowerCase();
+        if (hay.indexOf(q) < 0) return false;
+      }
+      return true;
+    });
+    var eqs = [];
+    EXERCISES.forEach(function (e) { if (eqs.indexOf(e.equipment) < 0) eqs.push(e.equipment); });
+
+    $("#lib-chips-cat").innerHTML = '<span class="lab">部位</span>' + chip("cat", "all", "全部") + EXERCISE_DATA.categories.map(function (c) { return chip("cat", c.id, c.name); }).join("");
+    $("#lib-chips-eq").innerHTML = '<span class="lab">器械</span>' + chip("eq", "all", "全部") + eqs.map(function (q) { return chip("eq", q, q); }).join("");
+    $("#lib-chips-diff").innerHTML = '<span class="lab">难度</span>' + chip("diff", "all", "全部") + [1, 2, 3].map(function (d) { return chip("diff", String(d), DIFFS[d]); }).join("");
+    bindChips();
+
+    $("#lib-count").innerHTML = list.length ? '共 <b>' + list.length + '</b> 个动作 · 卡片按 <b>' + kg + 'kg</b> 体重估算每15分钟消耗' : "";
+    $("#lib-grid").innerHTML = list.length ? list.map(function (e) {
+      return '<div class="ecard" data-ex="' + e.id + '">' +
+        '<div><div class="t">' + esc(e.name) + '</div><div class="e">' + esc(e.en) + '</div></div>' +
+        '<div class="tg">' + esc(e.targets.join(" · ")) + '</div>' +
+        '<div class="ft"><span class="tag gray">' + CATS[e.category] + '</span><span class="tag gray">' + esc(e.equipment) + '</span><span class="stars">' + "★".repeat(e.difficulty) + '</span>' +
+        '<span class="met">🔥' + kcal(e.met, 15, kg) + 'kcal/15min</span></div>' +
+      '</div>';
+    }).join("") : '<div class="empty-tip card"><span class="big">🔍</span>没有匹配的动作，换个筛选条件试试</div>';
+    $$("#lib-grid .ecard").forEach(function (c) { c.addEventListener("click", function () { openModal(c.getAttribute("data-ex")); }); });
+  }
+  function chip(group, val, txt) {
+    var on = String(state.filters[group === "cat" ? "cat" : group === "eq" ? "eq" : "diff"]) === String(val) ? " on" : "";
+    return '<button class="chip' + on + '" data-g="' + group + '" data-v="' + esc(val) + '">' + esc(txt) + "</button>";
+  }
+  function bindChips() {
+    $$(".chip").forEach(function (c) {
+      c.addEventListener("click", function () {
+        var g = c.getAttribute("data-g"), v = c.getAttribute("data-v");
+        if (g === "cat") state.filters.cat = v;
+        else if (g === "eq") state.filters.eq = v;
+        else state.filters.diff = v;
+        renderLibrary();
+      });
+    });
+  }
+
+  /* ───── 能量 Tab ───── */
+  function renderEnergy() {
+    var p = state.profile;
+    $("#in-age").value = p.age; $("#in-height").value = p.height; $("#in-weight").value = p.weight;
+    $$("#gender-seg button").forEach(function (b) { b.classList.toggle("on", b.getAttribute("data-g") === p.gender); });
+    var sel = $("#in-act");
+    sel.innerHTML = ACTS.map(function (a) { return '<option value="' + a.v + '"' + (Math.abs(a.v - p.act) < 1e-6 ? " selected" : "") + ">" + a.name + "</option>"; }).join("");
+
+    var bmr = 10 * p.weight + 6.25 * p.height - 5 * p.age + (p.gender === "male" ? 5 : -161);
+    var tdee = bmr * p.act;
+    var bmi = p.weight / Math.pow(p.height / 100, 2);
+    var bmiTxt = bmi < 18.5 ? "偏瘦" : bmi < 24 ? "正常" : bmi < 28 ? "超重" : "肥胖";
+    $("#en-stats").innerHTML =
+      statCard2("基础代谢 BMR", Math.round(bmr) + " <small>kcal/天</small>", true) +
+      statCard2("每日总消耗 TDEE", Math.round(tdee) + " <small>kcal/天</small>", true) +
+      statCard2("BMI", bmi.toFixed(1) + " <small>" + bmiTxt + "</small>");
+
+    $("#intake-cards").innerHTML =
+      '<div class="intake' + (state.mode === "fat_loss" ? " hl" : "") + '"><div class="v">' + Math.round(tdee - 400) + '</div><div class="k">🔥 减脂建议摄入</div><div class="d">TDEE − 400（缺口 300~500）</div></div>' +
+      '<div class="intake"><div class="v">' + Math.round(tdee) + '</div><div class="k">⚖️ 维持体重摄入</div><div class="d">等于每日总消耗</div></div>' +
+      '<div class="intake' + (state.mode === "muscle_gain" ? " hl" : "") + '"><div class="v">' + Math.round(tdee + 300) + '</div><div class="k">💪 增肌建议摄入</div><div class="d">TDEE + 300（盈余 200~400）</div></div>';
+
+    // 本周训练消耗
+    var plan = PLANS[state.mode], kg = p.weight;
+    var rows = [], max = 0;
+    plan.days.forEach(function (d) {
+      var k = 0;
+      d.items.forEach(function (it) { var ex = exById(it.exercise); if (ex) k += kcal(ex.met, it.duration_min, kg); });
+      rows.push({ name: "周" + "一二三四五六日".charAt(d.day - 1) + " · " + d.title, k: k });
+      if (k > max) max = k;
+    });
+    var totalK = rows.reduce(function (s, r) { return s + r.k; }, 0);
+    $("#burn-list").innerHTML =
+      '<div class="sub" style="margin-bottom:6px">「' + esc(plan.name) + '」各训练日预计消耗（按 ' + kg + 'kg 体重）</div>' +
+      rows.map(function (r) {
+        var w = max ? Math.round(r.k / max * 100) : 0;
+        return '<div class="burn-row"><span class="n">' + esc(r.name) + '</span><div class="b"><i style="width:' + w + '%"></i></div><span class="v">' + (r.k ? "≈" + r.k + " kcal" : "休息") + "</span></div>";
+      }).join("") +
+      '<div class="burn-row" style="border:0;margin-top:4px"><span class="n" style="color:var(--text);font-weight:800">一周合计</span><div class="b"></div><span class="v" style="font-size:15px">≈' + totalK + " kcal</span></div>";
+  }
+
+  /* ───── 饮食 Tab ───── */
+  function renderDiet() {
+    var ordered = PLAN_DATA.diet.slice().sort(function (a, b) {
+      return (b.id === state.mode ? 1 : 0) - (a.id === state.mode ? 1 : 0);
+    });
+    $("#diet-box").innerHTML = ordered.map(function (d) {
+      var hl = d.id === state.mode;
+      return '<div class="card diet-card' + (hl ? " hl" : "") + '"><div class="h3-row">' +
+        '<h2 class="sec"><span class="bar"></span>' + esc(d.name) + (hl ? ' <span class="diet-tag">当前目标</span>' : "") + '</h2></div>' +
+        '<div class="sub" style="margin-bottom:4px">' + esc(d.tagline) + '</div>' +
+        '<ul class="dot">' + d.principles.map(function (p) { return "<li>" + esc(p) + "</li>"; }).join("") + "</ul>" +
+        '<h3 class="m-sec" style="margin-top:16px"><span class="ic">🍽</span>一日餐单参考</h3>' +
+        d.meals.map(function (m) {
+          return '<div class="meal"><div class="time"><b>' + esc(m.name) + '</b><span>' + esc(m.time || "") + "</span></div><div class=\"what\">" + esc(m.content) + "</div></div>";
+        }).join("") + "</div>";
+    }).join("");
+  }
+
+  /* ───── 动作详情弹窗 ───── */
+  function openModal(exId) {
+    var e = exById(exId);
+    if (!e) return;
+    $("#modal-body").innerHTML =
+      '<button class="m-close" id="m-close" aria-label="关闭">✕</button>' +
+      '<div class="m-title">' + esc(e.name) + '</div><div class="m-en">' + esc(e.en) + '</div>' +
+      '<div class="m-badges"><span class="tag">' + CATS[e.category] + '</span><span class="tag gray">' + esc(e.equipment) + '</span>' +
+      '<span class="tag orange">' + DIFFS[e.difficulty] + " " + "★".repeat(e.difficulty) + '</span><span class="tag gray">MET ' + e.met + '</span></div>' +
+      '<div class="m-badges" style="margin-top:2px">' + e.targets.map(function (t) { return '<span class="tag gray">' + esc(t) + "</span>"; }).join("") + '</div>' +
+      '<div class="m-intro">' + esc(e.intro) + '</div>' +
+      '<h3 class="m-sec"><span class="ic">📋</span>动作步骤</h3><ol class="ov">' + e.steps.map(function (s) { return "<li>" + esc(s) + "</li>"; }).join("") + '</ol>' +
+      '<h3 class="m-sec"><span class="ic">💡</span>教练要点</h3><ul class="dot">' + e.tips.map(function (s) { return "<li>" + esc(s) + "</li>"; }).join("") + '</ul>' +
+      '<h3 class="m-sec"><span class="ic">⚠️</span>常见错误</h3><ul class="m-mistakes">' + e.mistakes.map(function (s) { return "<li>" + esc(s) + "</li>"; }).join("") + '</ul>' +
+      '<h3 class="m-sec"><span class="ic">🫁</span>呼吸</h3><div class="sub">' + esc(e.breathing) + '</div>' +
+      '<div class="m-kcal">🔥 以你当前录入的体重 <b>' + state.profile.weight + 'kg</b> 计算：练习 <b>' + kcal(e.met, 15, state.profile.weight) +
+      ' kcal / 15分钟</b> · <b>' + kcal(e.met, 30, state.profile.weight) + ' kcal / 30分钟</b><br>公式：MET ' + e.met + ' × 体重 × 时长；实际消耗因强度浮动约±20%</div>';
+    $("#modal-mask").classList.add("show");
+    document.body.style.overflow = "hidden";
+    $("#m-close").addEventListener("click", closeModal);
+    $("#modal-body").scrollTop = 0;
+  }
+  function closeModal() { $("#modal-mask").classList.remove("show"); document.body.style.overflow = ""; }
+
+  /* ───── 渲染入口 ───── */
+  function renderAll() {
+    document.body.className = "mode-" + state.mode;
+    $$("#mode-seg button").forEach(function (b) { b.classList.toggle("active", b.getAttribute("data-m") === state.mode); });
+    renderPlan(); renderLibrary(); renderEnergy(); renderDiet();
+  }
+  function switchTab(t) {
+    state.tab = t;
+    $$(".tabs button").forEach(function (b) { b.classList.toggle("active", b.getAttribute("data-t") === t); });
+    $$(".tab-panel").forEach(function (p) { p.classList.toggle("show", p.id === "tab-" + t); });
+    window.scrollTo({ top: 0 });
+  }
+
+  /* ───── 事件绑定 ───── */
+  document.addEventListener("DOMContentLoaded", function () {
+    $$("#mode-seg button").forEach(function (b) {
+      b.addEventListener("click", function () {
+        state.mode = b.getAttribute("data-m");
+        save(LS + "mode", state.mode);
+        renderAll();
+      });
+    });
+    $$(".tabs button").forEach(function (b) { b.addEventListener("click", function () { switchTab(b.getAttribute("data-t")); }); });
+    $("#modal-mask").addEventListener("click", function (e) { if (e.target === this) closeModal(); });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeModal(); });
+
+    var si = null;
+    $("#lib-search").addEventListener("input", function () {
+      var v = this.value;
+      clearTimeout(si);
+      si = setTimeout(function () { state.filters.q = v.trim(); renderLibrary(); }, 160);
+    });
+
+    $$("#gender-seg button").forEach(function (b) {
+      b.addEventListener("click", function () {
+        state.profile.gender = b.getAttribute("data-g");
+        save(LS + "profile", state.profile); renderEnergy();
+      });
+    });
+    [["#in-age", "age"], ["#in-height", "height"], ["#in-weight", "weight"]].forEach(function (pair) {
+      $(pair[0]).addEventListener("input", function () {
+        var v = parseFloat(this.value);
+        if (v > 0) { state.profile[pair[1]] = v; save(LS + "profile", state.profile); renderEnergy(); }
+      });
+      $(pair[0]).addEventListener("change", function () { renderAll(); });
+    });
+    $("#in-act").addEventListener("change", function () {
+      state.profile.act = parseFloat(this.value);
+      save(LS + "profile", state.profile); renderEnergy();
+    });
+    $("#reset-checkin").addEventListener("click", function () {
+      if (confirm("确定清空今天的打卡记录吗？")) {
+        delete state.checkin[ckKey()];
+        save(LS + "checkin", state.checkin);
+        renderPlan(); toast("已清空今日打卡");
+      }
+    });
+
+    renderAll();
+    switchTab("plan");
+  });
+})();
+
+</script>
+</body>
+</html>
