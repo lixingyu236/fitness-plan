@@ -26,6 +26,20 @@ body {
 
 /* ── 顶栏 ── */
 header { position: sticky; top: 0; z-index: 50; background: rgba(14, 16, 20, .86); backdrop-filter: blur(14px); border-bottom: 1px solid var(--border); }
+
+/* ── 公告横幅 ── */
+.announce { margin-top: 14px; display: flex; align-items: center; gap: 11px; padding: 13px 15px; border-radius: 14px; border: 1px solid var(--accent-glow); border-left: 4px solid var(--accent); box-shadow: 0 0 0 1px var(--accent-soft), 0 6px 26px -10px var(--accent-glow); animation: fadein .4s; }
+.announce .a-pill { flex: 0 0 auto; background: var(--accent); color: #10130a; font-size: 12.5px; font-weight: 800; padding: 3px 11px; border-radius: 99px; white-space: nowrap; }
+.announce .a-text { font-size: 15px; font-weight: 700; line-height: 1.5; }
+.announce .a-text b { color: var(--accent); font-size: 16.5px; }
+body.mode-fat_loss .announce { background: linear-gradient(120deg, rgba(163, 230, 53, .16), rgba(163, 230, 53, .04)); }
+body.mode-muscle_gain .announce { background: linear-gradient(120deg, rgba(251, 146, 60, .16), rgba(251, 146, 60, .04)); }
+@media (max-width: 560px) {
+  .announce { padding: 11px 12px; gap: 9px; }
+  .announce .a-pill { font-size: 11.5px; padding: 2px 9px; }
+  .announce .a-text { font-size: 13.5px; }
+  .announce .a-text b { font-size: 15px; }
+}
 .hd-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 0; }
 .logo { font-size: 19px; font-weight: 800; letter-spacing: .5px; display: flex; align-items: center; gap: 8px; white-space: nowrap; }
 .logo .badge-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 12px var(--accent-glow); }
@@ -231,6 +245,8 @@ ol.ov li b, .m-mistakes li b { color: var(--text); }
 </header>
 
 <div class="wrap">
+  <div class="announce"><span class="a-pill">📢 公告</span><div class="a-text"><b>胡晓媛</b>，你要好好锻炼，不能偷懒哦</div></div>
+
   <!-- 训练计划 -->
   <section class="tab-panel show" id="tab-plan">
     <div class="stats" id="plan-stats"></div>
